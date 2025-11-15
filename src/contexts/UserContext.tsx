@@ -27,6 +27,8 @@ interface UserContextType {
   user: User | null;
   setUser: (user: User | null) => void;
   updateXP: (xp: number) => void;
+  updateStreak: () => Promise<void>;
+  checkStreakExpiry: () => Promise<void>;
   startLearningSession: (topic: string, duration: number) => void;
 }
 
@@ -66,6 +68,89 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
+  const updateStreak = async () => {
+    if (!user) return;
+
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    
+    let newStreak = user.currentStreak;
+    let streakUpdated = false;
+
+    if (user.lastStudyDate) {
+      const lastStudy = new Date(user.lastStudyDate);
+      const lastStudyDay = new Date(lastStudy.getFullYear(), lastStudy.getMonth(), lastStudy.getDate());
+      
+      // Calculate difference in days
+      const diffTime = today.getTime() - lastStudyDay.getTime();
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      
+      if (diffDays === 0) {
+        // Same day - don't increment streak
+        return;
+      } else if (diffDays === 1) {
+        // Yesterday - increment streak
+        newStreak = user.currentStreak + 1;
+        streakUpdated = true;
+      } else {
+        // More than 1 day gap - reset streak to 1
+        newStreak = 1;
+        streakUpdated = true;
+      }
+    } else {
+      // First study session ever
+      newStreak = 1;
+      streakUpdated = true;
+    }
+
+    if (streakUpdated) {
+      const newMaxStreak = Math.max(newStreak, user.maxStreak);
+      const updatedUser = {
+        ...user,
+        currentStreak: newStreak,
+        maxStreak: newMaxStreak,
+        lastStudyDate: now.toISOString(),
+      };
+      
+      setUser(updatedUser);
+      
+      // Persist to Supabase
+      await updateProfile(user.id, {
+        current_streak: newStreak,
+        max_streak: newMaxStreak,
+        last_study_date: now.toISOString(),
+      });
+    }
+  };
+
+  const checkStreakExpiry = async () => {
+    if (!user || !user.lastStudyDate) return;
+
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const lastStudy = new Date(user.lastStudyDate);
+    const lastStudyDay = new Date(lastStudy.getFullYear(), lastStudy.getMonth(), lastStudy.getDate());
+    
+    // Calculate difference in days
+    const diffTime = today.getTime() - lastStudyDay.getTime();
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    
+    // If more than 1 day has passed, reset streak to 0
+    if (diffDays > 1 && user.currentStreak > 0) {
+      const updatedUser = {
+        ...user,
+        currentStreak: 0,
+      };
+      
+      setUser(updatedUser);
+      
+      // Persist to Supabase
+      await updateProfile(user.id, {
+        current_streak: 0,
+      });
+    }
+  };
+
   const startLearningSession = (topic: string, duration: number) => {
     if (user) {
       // Logic for starting learning session
@@ -76,7 +161,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   return (
-    <UserContext.Provider value={{ user, setUser, updateXP, startLearningSession }}>
+    <UserContext.Provider value={{ user, setUser, updateXP, updateStreak, checkStreakExpiry, startLearningSession }}>
       {children}
     </UserContext.Provider>
   );

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useUser } from '../contexts/UserContext.tsx';
@@ -6,8 +6,15 @@ import Animal from '../components/Animal.tsx';
 
 const DashboardPage: React.FC = () => {
   const { t } = useTranslation();
-  const { user } = useUser();
+  const { user, checkStreakExpiry } = useUser();
   const navigate = useNavigate();
+
+  // Check if streak has expired when dashboard loads
+  useEffect(() => {
+    if (user) {
+      checkStreakExpiry();
+    }
+  }, [user?.id]); // Only run when user id changes (on mount/user change)
 
   if (!user) {
     navigate('/');

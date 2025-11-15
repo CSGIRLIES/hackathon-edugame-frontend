@@ -21,7 +21,7 @@ const LearningPage: React.FC = () => {
   const [planError, setPlanError] = useState<string | null>(null);
   const [studyPlan, setStudyPlan] = useState<any | null>(null);
 
-  const { user, updateXP } = useUser();
+  const { user, updateXP, updateStreak } = useUser();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,11 +33,12 @@ const LearningPage: React.FC = () => {
     } else if (isWorking && timeLeft === 0) {
       const xpGained = 25; // 25 minutes = 25 XP
       updateXP(xpGained);
+      updateStreak(); // Update streak when session completes
       alert(`Bravo ! Tu as terminé un focus de 25 min. ${xpGained} XP pour ${user.animalName} ✨`);
       navigate('/quiz');
     }
     return () => window.clearTimeout(timer);
-  }, [timeLeft, isWorking, isPaused, updateXP, navigate, user]);
+  }, [timeLeft, isWorking, isPaused, updateXP, updateStreak, navigate, user]);
 
   const handleStart = () => {
     if (topic.trim()) {
