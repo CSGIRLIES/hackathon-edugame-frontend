@@ -16,6 +16,24 @@ When you study, focus, and answer quizzes correctly, your companion gains XP, le
 - **Real-time switching**: Instant language changes across entire app
 - **Persistent choice**: Language selection saved in localStorage
 
+### 🔥 **NEW: Visual Streaks System**
+- **Fire-based motivation**: 🔥 Single flame (1-2 days), 🔥🔥 Double flames (3-6 days), 🔥🔥🔥🔥 Epic multi-flames
+- **Personal records**: 🏆 Trophy for beating your max streak
+- **Encouragement messages**: Dynamic based on streak length ("You're on fire!", "Legendary!")
+- **Dashboard integration**: Prominent 2x2 grid with companion, sessions, and streaks
+
+### 👨‍👩‍👧‍👦 **NEW: Parent Controls & Tracking**
+- **Parent email storage**: Link accounts for oversight
+- **Study goals**: Set daily study time objectives
+- **Total study time**: Cumulative session tracking
+- **Ready for parental dashboards**: Foundation for monitoring child progress
+
+### 👥 Social Features Foundation
+- **XP leaderboards**: Comparative study achievements
+- **Streak competitions**: Social streak visibility
+- **Friend connections**: Ready for friend visiting features
+- **"Top Scholars"** soft leaderboards by study consistency
+
 ### Core user journey
 
 - **Authentication / Sign-up**
@@ -130,23 +148,39 @@ hackathon-edugame-frontend/
 │   └── package-lock.json
 ├── public/
 │   └── index.html
+
+ ```text
+hackathon-edugame-frontend/
+├── backend/
+├── public/
 ├── src/
-│   ├── index.tsx
-│   ├── App.tsx
-│   ├── index.css
-│   ├── contexts/
-│   │   └── UserContext.tsx
 │   ├── components/
-│   │   └── Animal.tsx
-│   └── pages/
-│       ├── AuthPage.tsx
-│       ├── OnboardingPage.tsx
-│       ├── DashboardPage.tsx
-│       ├── QuizPage.tsx
-│       └── LearningPage.tsx
-├── .gitignore
+│   │   ├── Animal.tsx               # Companion animal with dynamic messages
+│   │   ├── LanguageSelector.tsx     # Multi-language dropdown
+│   │   └── StreaksWidget.tsx        # 🔥 Visual streaks with fire emojis
+│   ├── contexts/
+│   │   └── UserContext.tsx          # Global user & companion state
+│   ├── i18n/                        # 🌍 Internationalization setup
+│   │   ├── config.ts                # i18n configuration
+│   │   └── locales/
+│   │       ├── en.json              # English translations
+│   │       ├── fr.json              # French translations
+│   │       ├── es.json              # Spanish translations
+│   │       ├── de.json              # German translations
+│   │       └── ar.json              # Arabic with RTL
+│   ├── pages/
+│   │   ├── AuthPage.tsx             # Login/signup
+│   │   ├── OnboardingPage.tsx       # Animal creation
+│   │   ├── DashboardPage.tsx        # Main hub with 2x2 grid
+│   │   ├── LearningPage.tsx         # Study sessions + document upload
+│   │   └── QuizPage.tsx             # AI question generation
+│   └── utils/
+│       ├── profileService.ts        # Database operations
+│       └── supabaseClient.ts        # Supabase setup
 ├── package.json
-└── README.md
+├── README.md
+└── supabase_schema.sql               # Database setup SQL
+```
 ```
 
 
@@ -278,12 +312,26 @@ You should see:
 
 The quiz API is now available at `http://localhost:4000/api/quiz/from-text`.
 
-### Step 6 – Start the frontend dev server
+### **Simplified Development Setup**
 
-In another terminal (from the project root):
+**NEW: One-command development experience!**
+
+From the project root, run:
 
 ```bash
-npm start
+npm run dev
+```
+
+This starts **both frontend and backend** simultaneously using concurrently! ✨
+
+**Alternatively, run separately:**
+
+```bash
+# Terminal 1 - Backend
+npm run dev:backend    # or: cd backend && npm start
+
+# Terminal 2 - Frontend  
+npm run dev:frontend   # or: npm start
 ```
 
 This will compile the React app and open it on `http://localhost:3000`.
@@ -369,22 +417,31 @@ The i18n system is easily extensible. To add a new language:
 
 ### Current state
 
+- **🔥 NEW: Visual Streaks System** - Fire emoji progression, personal records, dashboard integration
+- **👨‍👩‍👧‍👦 NEW: Parent Controls** - Email linking, study goals, total time tracking
+- **📊 NEW: Social Leaderboards** - XP/streak visibility, friend connections ready
+
 - Authentication uses **Supabase** (real user accounts with email/password).
-- **Companion profiles are persisted** to Supabase database:
-  - Name, animal type, animal name, color, XP, and level are saved.
-  - XP updates automatically sync to the database in real-time.
-  - Profiles persist across sessions – log out and back in to keep your progress!
-- Document upload and study plan generation are wired to the UI but require uploaded material to work.
-- AI quiz generation works with any topic (powered by Mistral).
+- **Companion profiles are persisted** to Supabase database with enhanced tracking:
+  - Name, animal type, color, XP, level, study streaks, parent email, goals, total time
+  - All data syncs automatically – profiles persist across sessions!
+- **AI quiz generation** works with any topic (powered by Mistral).
+- **Document upload & study plan generation** - Fully functional AI-powered features!
+  - Upload PDFs/DOCX, AI processes and generates custom study plans
+  - Visual 2x2 dashboard with companion, streaks, study sessions, and social features
 
-### Future extensions
+### What's Ready for Production
 
-- Add routes/UI for:
-  - Uploading PDFs / DOCX and indexing them via `DocumentIngestionAgent`.
-  - Generating quiz questions from stored documents (`QuizGenerationAgent`).
-  - Generating full Pomodoro-based study plans using `StudyCoachAgent`.
-- Add streaks, parental view, and a small social component (friend visits, soft leaderboard).
+✅ **Multi-Language**: 5 languages (EN, FR, ES, DE, AR) with instant switching
+✅ **Gamification**: XP, levels, visual animal evolution, streaks
+✅ **AI Features**: Quiz generation, document analysis, study planning
+✅ **Parent Oversight**: Email linking, time tracking, goal setting
+✅ **Developer Experience**: `npm run dev` runs both frontend + backend
+✅ **Persistence**: All data saved to Supabase with real-time sync
 
-If you want, we can next:
-- Wire document upload + study plan generation to the UI.
-- Add a root-level script (e.g. with `concurrently`) to run frontend and backend with a single command like `npm run dev`.
+### Remaining Future Extensions (Optional)
+
+- Parent monitoring dashboard (currently foundation exists)
+- Advanced social features (leaderboard UI fully ready)
+- Mobile-responsive design refinements
+- Additional language support (easy to add)
