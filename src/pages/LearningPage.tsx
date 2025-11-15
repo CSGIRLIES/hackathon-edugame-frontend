@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useUser } from '../contexts/UserContext.tsx';
 import Animal from '../components/Animal.tsx';
+import Modal from '../components/Modal.tsx';
 
 const LearningPage: React.FC = () => {
   const { t } = useTranslation();
@@ -21,6 +22,9 @@ const LearningPage: React.FC = () => {
   const [planError, setPlanError] = useState<string | null>(null);
   const [studyPlan, setStudyPlan] = useState<any | null>(null);
 
+  const [showCompletionModal, setShowCompletionModal] = useState(false);
+  const [sessionXP, setSessionXP] = useState(0);
+
   const { user, updateXP, updateStreak } = useUser();
   const navigate = useNavigate();
 
@@ -34,11 +38,11 @@ const LearningPage: React.FC = () => {
       const xpGained = 25; // 25 minutes = 25 XP
       updateXP(xpGained);
       updateStreak(); // Update streak when session completes
-      alert(`Bravo ! Tu as terminé un focus de 25 min. ${xpGained} XP pour ${user.animalName} ✨`);
-      navigate('/quiz');
+      setSessionXP(xpGained);
+      setShowCompletionModal(true);
     }
     return () => window.clearTimeout(timer);
-  }, [timeLeft, isWorking, isPaused, updateXP, updateStreak, navigate, user]);
+  }, [timeLeft, isWorking, isPaused, updateXP, updateStreak, user]);
 
   const handleStart = () => {
     if (topic.trim()) {
@@ -346,6 +350,19 @@ const LearningPage: React.FC = () => {
           </div>
         </section>
       </main>
+
+      <Modal
+        isOpen={showCompletionModal}
+        onClose={() => setShowCompletionModal(false)}
+        title="🎉 Bravo !"
+        message={`Tu as terminé une session de 25 minutes ! ${sessionXP} XP gagnés pour ${user.animalName}. C'est l'heure de tester tes connaissances !`}
+        icon="🎉"
+        buttonText="Commencer le quiz"
+        buttonAction={() => {
+          setShowCompletionModal(false);
+          navigate('/quiz', { state: { topic } });
+        }}
+      />
     </div>
   );
 };

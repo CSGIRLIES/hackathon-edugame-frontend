@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useUser } from '../contexts/UserContext.tsx';
+import Modal from '../components/Modal.tsx';
 
 interface Question {
   question: string;
@@ -11,6 +12,7 @@ interface Question {
 
 const QuizPage: React.FC = () => {
   const { t } = useTranslation();
+  const location = useLocation();
   const [topic, setTopic] = useState('');
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -18,9 +20,58 @@ const QuizPage: React.FC = () => {
   const [started, setStarted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showCompletionModal, setShowCompletionModal] = useState(false);
+  const [finalScore, setFinalScore] = useState(0);
 
   const { updateXP } = useUser();
   const navigate = useNavigate();
+
+  // Auto-start quiz if topic is passed from LearningPage
+  useEffect(() => {
+    const stateData = location.state as { topic?: string } | null;
+    if (stateData?.topic) {
+      setTopic(stateData.topic);
+      // Auto-start the quiz with the provided topic
+      const startQuizWithTopic = async () => {
+        setIsLoading(true);
+        setError(null);
+
+        try {
+          const res = await fetch('http://localhost:4000/api/quiz/from-text', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ topic: stateData.topic, numQuestions: 3 }),
+          });
+
+          if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            throw new Error(data.error || 'Erreur serveur');
+          }
+
+          const data = await res.json();
+          const q: Question[] = data.questions || [];
+
+          if (!q.length) {
+            throw new Error("L'IA n'a pas réussi à générer des questions.");
+          }
+
+          setQuestions(q);
+          setStarted(true);
+          setScore(0);
+          setCurrentQuestion(0);
+        } catch (e: any) {
+          console.error('[QuizPage] Failed to start quiz', e);
+          setError(e.message || 'Impossible de générer le quiz, réessaie plus tard.');
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      startQuizWithTopic();
+    }
+  }, [location]);
 
   const handleStartQuiz = async () => {
     const trimmed = topic.trim();
@@ -66,17 +117,19 @@ const QuizPage: React.FC = () => {
     const current = questions[currentQuestion];
     const isCorrect = index === current.correct;
 
-    if (isCorrect) {
-      setScore((prev) => prev + 20);
-    }
+    // Calculate the new score
+    const newScore = isCorrect ? score + 20 : score;
 
     if (currentQuestion < questions.length - 1) {
+      // Not the last question, just update score and move to next
+      setScore(newScore);
       setCurrentQuestion((prev) => prev + 1);
     } else {
-      const finalScore = isCorrect ? score + 20 : score;
-      updateXP(finalScore);
-      alert(`Quiz terminé ! Tu as gagné ${finalScore} XP pour ton compagnon ✨`);
-      navigate('/dashboard');
+      // Last question, update score and show completion modal
+      setScore(newScore);
+      updateXP(newScore);
+      setFinalScore(newScore);
+      setShowCompletionModal(true);
     }
   };
 
@@ -177,6 +230,19 @@ const QuizPage: React.FC = () => {
           </div>
         </section>
       </main>
+
+      <Modal
+        isOpen={showCompletionModal}
+        onClose={() => setShowCompletionModal(false)}
+        title="✨ Félicitations !"
+        message={`Quiz terminé ! Tu as gagné ${finalScore} XP pour ton compagnon. Continue comme ça ! 🎉`}
+        icon="✨"
+        buttonText="Retour au tableau de bord"
+        buttonAction={() => {
+          setShowCompletionModal(false);
+          navigate('/dashboard');
+        }}
+      />
     </div>
   );
 };
