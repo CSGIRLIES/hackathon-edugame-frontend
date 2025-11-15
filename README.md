@@ -1,11 +1,20 @@
-# CSGIRLIES – Magical Study Companion 🪄
+# CSGIRLIES – Magical Study Companion 🪄 🌍
 
-CSGIRLIES is a gamified learning app where you adopt a **magical baby animal** (chaton ailé, mini-dragon, loutre érudite, pingouin cosmique…) that grows and learns with you.
+CSGIRLIES is a **multi-language gamified learning app** where you adopt a **magical baby animal** (winged kitten, mini-dragon, scholarly otter, cosmic penguin...) that grows and learns with you.
+
+🎯 **Available in 5 languages**: English 🇬🇧, French 🇫🇷, Spanish 🇪🇸, German 🇩🇪, Arabic 🇸🇦 (with RTL support)
 
 When you study, focus, and answer quizzes correctly, your companion gains XP, levels up (bébé → adolescent → adulte), and sends you encouraging messages – “Talking Tom”-style but for learning.
 
 ---
 ## 1. Features
+
+### 🌍 Multi-Language Support
+- **5 languages supported**: English 🇬🇧, French 🇫🇷, Spanish 🇪🇸, German 🇩🇪, Arabic 🇸🇦
+- **Language selector**: Top-right dropdown with flag icons
+- **RTL support**: Arabic automatically switches to right-to-left layout
+- **Real-time switching**: Instant language changes across entire app
+- **Persistent choice**: Language selection saved in localStorage
 
 ### Core user journey
 
@@ -77,6 +86,7 @@ Messages rotate automatically every few seconds, so it feels alive and supportiv
 
 - **React + TypeScript** (Create React App style setup).
 - **React Router** for navigation between pages.
+- **Internationalization (i18next)** for multi-language support.
 - Global state for user & companion via `UserContext`.
 - Custom CSS theme (dark violet gradient, glassmorphic cards, animated orb).
 
@@ -320,6 +330,38 @@ This will compile the React app and open it on `http://localhost:3000`.
    - Learning: encourages focus while the timer runs.
    - After focus / during breaks: reminds you to move, drink water.
    - Quiz: encourages you not to panic and to think.
+
+---
+
+## 🌍 Using Multi-Language Support
+
+CSGIRLIES supports 5 languages to make learning accessible worldwide:
+
+### **Changing Languages:**
+1. **Language selector**: Look for the dropdown in the top-right corner with flag icons
+2. **Choose your language**: Click any language (🇬🇧 🇫🇷 🇪🇸 🇩🇪 🇸🇦)
+3. **Instant change**: The entire app switches language immediately
+4. **Persistent choice**: Your choice is saved and restored when you reopen the app
+
+### **Special Features:**
+- **Arabic RTL Layout**: When selecting Arabic 🇸🇦, the entire app switches to right-to-left layout
+- **Complete Translation**: Every button, message, and feature is translated
+- **Context-aware Content**: Animal names and messages adapt to the selected language
+
+### **Supported Languages:**
+- **English 🇬🇧**: Default language
+- **French 🇫🇷**: Complete translation (including regional expressions)
+- **Spanish 🇪🇸**: Academic and educational terminology
+- **German 🇩🇪**: Formal educational language
+- **Arabic 🇸🇦**: RTL layout with Arabic educational terms
+
+### **Adding More Languages:**
+The i18n system is easily extensible. To add a new language:
+1. Create `src/i18n/locales/[lang].json` following the existing structure
+2. Add the language to `src/i18n/config.ts`
+3. Add the flag to `LanguageSelector.tsx`
+
+**All translations are professionally localized for educational contexts!**
 
 
 ---
