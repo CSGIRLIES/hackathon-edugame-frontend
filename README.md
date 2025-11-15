@@ -166,9 +166,34 @@ MISTRAL_API_KEY=YOUR_MISTRAL_API_KEY_HERE
 
 - `PORT` – port for the backend API server.
 - `FRONTEND_ORIGIN` – allowed origin for CORS (the React dev server).
-- `MISTRAL_API_KEY` – your secret key from Mistral.
+- `MISTRAL_API_KEY` – your secret key from Mistral (get one at https://mistral.ai).
 
-> Tip: Never commit `.env`. It’s already in `.gitignore`.
+### Frontend `.env` (for Supabase authentication)
+
+In the project root, create a file called `.env` based on `.env.example`:
+
+```env
+# .env (project root)
+REACT_APP_SUPABASE_URL=YOUR_SUPABASE_URL_HERE
+REACT_APP_SUPABASE_ANON_KEY=YOUR_SUPABASE_ANON_KEY_HERE
+```
+
+- `REACT_APP_SUPABASE_URL` – your Supabase project URL (e.g. `https://xxxx.supabase.co`).
+- `REACT_APP_SUPABASE_ANON_KEY` – your Supabase public/anon key.
+
+**How to get Supabase credentials:**
+
+1. Go to https://supabase.com and create a free account + project.
+2. In your Supabase dashboard → **Settings** → **API**:
+   - Copy **Project URL** → use it as `REACT_APP_SUPABASE_URL`.
+   - Copy **anon public** key → use it as `REACT_APP_SUPABASE_ANON_KEY`.
+3. **(Important)** Disable email confirmation for instant signup:
+   - Go to **Authentication** → **Providers** → Click on **Email**.
+   - Turn **OFF** the "Confirm email" toggle.
+   - Save changes.
+   - Now users can sign up and log in immediately without email verification (perfect for demos!).
+
+> Tip: Never commit `.env` files. They're already in `.gitignore`.
 
 
 ---
@@ -253,7 +278,9 @@ This will compile the React app and open it on `http://localhost:3000`.
    - Go to `http://localhost:3000`.
 
 2. **Sign Up**
-   - On the first screen, choose *Créer un compte* and fill in email & password (mock-only for now).
+   - On the first screen, choose *Créer un compte* and fill in email & password.
+   - With Supabase configured, this creates a real user account.
+   - Without Supabase env vars, you'll see an error message (auth won't work).
 
 3. **Onboarding**
    - Step 1: Enter your name/pseudo.
@@ -293,8 +320,8 @@ This will compile the React app and open it on `http://localhost:3000`.
 
 ### Current limitations
 
-- Authentication is **mock-only** (no real user accounts persisted).
-- `DocumentIngestionAgent` and `StudyCoachAgent` are ready but not yet exposed via HTTP or UI.
+- Authentication uses **Supabase** (real accounts, but companion profile/XP not yet persisted to database).
+- Document upload and study plan generation are wired to the UI but require uploaded material to work.
 - XP and companion state are stored in memory on the frontend (not persisted across refreshes).
 
 ### Future extensions
