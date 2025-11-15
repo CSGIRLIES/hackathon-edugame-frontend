@@ -6,6 +6,7 @@ interface Question {
   question: string;
   options: string[];
   correct: number;
+  wolframInput?: string | null;
 }
 
 interface WolframExplanation {
@@ -15,8 +16,46 @@ interface WolframExplanation {
 
 interface WolframHistoryEntry {
   question: string;
+  primaryResult: string;
   explanations: WolframExplanation[];
 }
+
+// Essaie de transformer certaines questions (ex : "Quelle est la solution de l'équation 3x + 5 = 18 ?")
+// en une expression Wolfram plus précise (ex : "Solve[3 x + 5 == 18, x]") avant d'appeler l'API.
+const buildWolframInput = (questionText: string): string => {
+  // Cas 1 : question de type "Quelle est la solution de l'équation 3x + 5 = 18 ?"
+  const eqMatch = questionText.match(/équation\s+([^?]+)/i);
+  if (eqMatch) {
+    const rawEq = eqMatch[1].trim(); // ex : "3x + 5 = 18"
+
+    if (!rawEq.includes('=')) {
+      return questionText;
+    }
+
+    const parts = rawEq.split('=');
+    if (parts.length !== 2) {
+      return questionText;
+    }
+
+    const lhs = parts[0].trim();
+    const rhs = parts[1].trim();
+    const wolframEq = `${lhs} == ${rhs}`;
+
+    // On suppose ici que la variable principale est x (pour les questions de type collège/lycée)
+    return `Solve[${wolframEq}, x]`;
+  }
+
+  // Cas 2 : question de type "Quel est le résultat de 8 - 3 ?"
+  const resultMatch = questionText.match(/résultat de\s+([^?]+)/i);
+  if (resultMatch) {
+    const expr = resultMatch[1].trim(); // ex : "8 - 3"
+    // Cette expression est déjà compréhensible par Wolfram (calcul direct)
+    return expr;
+  }
+
+  // Par défaut, on renvoie le texte original
+  return questionText;
+};
 
 const QuizPage: React.FC = () => {
   const [topic, setTopic] = useState('');
@@ -95,7 +134,9 @@ const QuizPage: React.FC = () => {
     if (!questions.length) return;
 
     const current = questions[currentQuestion];
-    const input = current.question;
+    const input = current.wolframInput && current.wolframInput.trim().length > 0
+      ? current.wolframInput
+      : buildWolframInput(current.question);
 
     setWolframLoading(true);
     setWolframError(null);
@@ -116,10 +157,12 @@ const QuizPage: React.FC = () => {
 
       const data = await res.json();
       const explanations: WolframExplanation[] = data.explanations || [];
+      const primaryResult: string = data.primaryResult || '';
 
       setWolframHistory((prev) => [
         {
           question: current.question,
+          primaryResult,
           explanations,
         },
         ...prev,
@@ -288,13 +331,19 @@ const QuizPage: React.FC = () => {
                   <p className="wolfram-question">
                     <strong>Question :</strong> {entry.question}
                   </p>
-                  <ul className="wolfram-explanations">
-                    {entry.explanations.map((exp, i) => (
-                      <li key={i}>
-                        <strong>{exp.title} :</strong> {exp.plaintext}
-                      </li>
-                    ))}
-                  </ul>
+                  <p className="wolfram-result">
+                    <strong>Résultat Wolfram :</strong>{' '}
+                    {entry.primaryResult || 'Pas de résultat clair renvoyé.'}
+                  </p>
+                  {entry.explanations.length > 0 && (
+                    <ul className="wolfram-explanations">
+                      {entry.explanations.map((exp, i) => (
+                        <li key={i}>
+                          <strong>{exp.title} :</strong> {exp.plaintext}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
               ))}
             </div>

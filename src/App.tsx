@@ -6,6 +6,7 @@ import DashboardPage from './pages/DashboardPage.tsx';
 import QuizPage from './pages/QuizPage.tsx';
 import QuizThemesPage from './pages/QuizThemesPage.tsx';
 import LearningPage from './pages/LearningPage.tsx';
+import WolframCompanionPage from './pages/WolframCompanionPage.tsx';
 import UserHeader from './components/UserHeader.tsx';
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
         <Route path="/quiz" element={<QuizPage />} />
         <Route path="/quiz/themes" element={<QuizThemesPage />} />
         <Route path="/learning" element={<LearningPage />} />
+        <Route path="/wolfram" element={<WolframCompanionPage />} />
       </Routes>
     </div>
   );

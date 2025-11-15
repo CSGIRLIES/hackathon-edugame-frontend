@@ -120,6 +120,9 @@ const DashboardPage: React.FC = () => {
             <button className="btn btn-outline" onClick={() => navigate('/quiz')}>
               Quiz personnalisé
             </button>
+            <button className="btn btn-outline" onClick={() => navigate('/wolfram')}>
+              Compagnon prof (Wolfram)
+            </button>
           </div>
 
           <p className="helper-text" style={{ marginTop: '0.5rem' }}>

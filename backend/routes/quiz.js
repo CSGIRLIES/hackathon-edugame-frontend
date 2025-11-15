@@ -14,7 +14,31 @@ async function generateQuizFromText(topic, numQuestions = 3) {
   const prompt = `Tu es une IA qui crée des quiz pédagogiques pour des élèves.
 Le niveau (primaire, collège, lycée, université) et le sujet sont décrits dans ce texte : "${topic}".
 
-Génère ${numQuestions} questions à choix multiples pour vérifier que l'élève a bien compris. Utilise un ton bienveillant, simple et clair.
+Ta tâche : générer ${numQuestions} questions à choix multiples pour vérifier que l'élève a bien compris.
+
+CONTRAINTES TRÈS IMPORTANTES :
+- Chaque question doit avoir EXACTEMENT 4 options.
+- Il doit y avoir UNE SEULE bonne réponse par question.
+- Le champ "correctIndex" doit être un nombre entre 0 et 3 qui pointe vers la bonne option dans le tableau "options".
+- Les autres options doivent être plausibles mais fausses (pas des nombres totalement au hasard).
+- Pour les questions de math (équations, calculs, etc.) :
+  - la bonne réponse doit être le bon résultat numérique,
+  - les autres réponses doivent être des nombres proches ou des erreurs classiques (par exemple erreur de signe ou de calcul),
+  - ne propose pas des réponses comme "1", "3", "5", "18" si elles n'ont aucun lien avec l'exercice.
+- N'écris pas la question complète comme une option (les options doivent être des réponses possibles, pas des copies de l'énoncé).
+- Utilise un ton bienveillant, simple et clair, adapté au niveau indiqué.
+
+INTÉGRATION AVEC WOLFRAM (très important) :
+- Quand c'est pertinent (maths, sciences, géographie, conversions, histoire, chimie, physique, etc.), ajoute un champ "wolframInput" pour chaque question.
+- "wolframInput" doit être une requête que Wolfram Alpha comprend, par exemple :
+  - "solve x^2 - 5x + 6 = 0" (ou une forme équivalente),
+  - "explain photosynthesis",
+  - "population of France vs Germany",
+  - "convert 100 km to miles",
+  - "timeline of World War II",
+  - "balance H2 + O2 -> H2O",
+  - "Newton's second law".
+- Si tu ne trouves pas de requête pertinente pour une question, tu peux mettre "wolframInput": null.
 
 Répond UNIQUEMENT avec du JSON valide, sans explication autour, avec ce format exact :
 {
@@ -22,7 +46,8 @@ Répond UNIQUEMENT avec du JSON valide, sans explication autour, avec ce format 
     {
       "question": "Question en français ?",
       "options": ["Option A", "Option B", "Option C", "Option D"],
-      "correctIndex": 0
+      "correctIndex": 0,
+      "wolframInput": "requête Wolfram Alpha pertinente ou null"
     }
   ]
 }`;
@@ -59,11 +84,15 @@ Répond UNIQUEMENT avec du JSON valide, sans explication autour, avec ce format 
     throw new Error("Parsed quiz has no questions array");
   }
 
-  // Normalise shape to { question, options, correct }
+  // Normalise shape to { question, options, correct, wolframInput? }
   const questions = parsed.questions.map((q) => ({
     question: q.question,
     options: q.options,
     correct: typeof q.correctIndex === "number" ? q.correctIndex : 0,
+    wolframInput:
+      typeof q.wolframInput === "string" && q.wolframInput.trim().length > 0
+        ? q.wolframInput.trim()
+        : null,
   }));
 
   return { questions };
