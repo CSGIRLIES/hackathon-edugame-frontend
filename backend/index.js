@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import quizRouter from "./routes/quiz.js";
+import uploadRouter from "./routes/upload.js";
+import studyRouter from "./routes/study.js";
 
 dotenv.config();
 
@@ -16,6 +18,8 @@ app.get("/api/health", (_req, res) => {
 });
 
 app.use("/api/quiz", quizRouter);
+app.use("/api/upload", uploadRouter);
+app.use("/api/study", studyRouter);
 
 app.use((err, _req, res, _next) => {
   console.error("[Backend] Unexpected error", err);
