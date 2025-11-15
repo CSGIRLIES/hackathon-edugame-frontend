@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useUser } from '../contexts/UserContext.tsx';
 
 interface Question {
@@ -9,6 +10,7 @@ interface Question {
 }
 
 const QuizPage: React.FC = () => {
+  const { t } = useTranslation();
   const [topic, setTopic] = useState('');
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
