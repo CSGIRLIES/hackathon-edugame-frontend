@@ -1,30 +1,70 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../contexts/UserContext.tsx';
+import { supabase } from '../utils/supabaseClient';
 
 const AuthPage: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const navigate = useNavigate();
   const { setUser } = useUser();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isLogin) {
-      const mockUser = {
-        id: '1',
-        name: 'User',
-        animalType: 'cat',
-        animalName: 'Lumi',
-        animalColor: '#a855ff',
-        xp: 10,
-        level: 'baby' as const,
-      };
-      setUser(mockUser);
-      navigate('/dashboard');
-    } else {
-      navigate('/onboarding');
+    setError(null);
+
+    if (!supabase) {
+      setError("L'authentification n'est pas configurée (Supabase manquant).");
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+
+      if (isLogin) {
+        const { data, error: signInError } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+        if (signInError || !data.session || !data.user) {
+          throw new Error(signInError?.message || 'Connexion impossible.');
+        }
+
+        const appUser = {
+          id: data.user.id,
+          name: data.user.email?.split('@')[0] || 'Utilisateur',
+          animalType: 'cat',
+          animalName: 'Lumi',
+          animalColor: '#a855ff',
+          xp: 0,
+          level: 'baby' as const,
+        };
+
+        setUser(appUser);
+        navigate('/dashboard');
+      } else {
+        const { data, error: signUpError } = await supabase.auth.signUp({
+          email,
+          password,
+        });
+
+        if (signUpError || !data.user) {
+          throw new Error(signUpError?.message || "Inscription impossible.");
+        }
+
+        // After sign up, we send the user to onboarding to configure their companion.
+        navigate('/onboarding');
+      }
+    } catch (err: any) {
+      console.error('[AuthPage] Auth error', err);
+      setError(err.message || 'Une erreur est survenue.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -80,9 +120,21 @@ const AuthPage: React.FC = () => {
               <p className="helper-text">Pas besoin d'un mot de passe parfait, c'est un prototype 💜</p>
             </div>
 
+            {error && (
+              <p className="helper-text" style={{ color: '#fb7185' }}>
+                {error}
+              </p>
+            )}
+
             <div className="btn-row">
-              <button type="submit" className="btn btn-primary">
-                {isLogin ? 'Se connecter' : "Rejoindre l'aventure"}
+              <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+                {isSubmitting
+                  ? isLogin
+                    ? 'Connexion...'
+                    : 'Création...'
+                  : isLogin
+                  ? 'Se connecter'
+                  : "Rejoindre l'aventure"}
               </button>
               <button
                 type="button"
