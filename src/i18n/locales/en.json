@@ -68,6 +68,10 @@
     "startLearning": "Start Learning Session",
     "quickQuiz": "Quick Quiz",
     "companionName": "Your Companion",
+    "companionDescription": "{{name}} evolves based on your XP and sends you little messages.",
+    "todaySessionTitle": "Your session today",
+    "todaySessionDescription": "Choose how you want to learn today. Your companion will follow your pace.",
+    "tip": "Tip: a pomodoro session + a quiz at the end = lots of XP for {{name}} ✨",
     "levelBaby": "Baby",
     "levelAdolescent": "Adolescent",
     "levelAdult": "Adult"
@@ -150,6 +154,19 @@
       "Take your time, no rush!",
       "Every answer teaches you something!"
     ]
+  },
+  "streaks": {
+    "title": "Streaks",
+    "subtitle": "Come back every day to increase your streak!",
+    "days": "days",
+    "restart": "Restart your streak today!",
+    "oneDay": "1 day! That's a good start!",
+    "keepGoing": "Keep it up!",
+    "onFire": "You're on fire! 🔥",
+    "epic": "Epic streak! Keep going! 🌟",
+    "legendary": "You're a legend! 👑",
+    "personalBest": "Personal best",
+    "getStarted": "Start a new streak by learning today!"
   },
   "errors": {
     "generic": "An error occurred. Please try again.",

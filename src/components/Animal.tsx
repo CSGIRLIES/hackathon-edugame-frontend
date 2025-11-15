@@ -12,6 +12,7 @@ interface AnimalProps {
 const Animal: React.FC<AnimalProps> = ({ type, color, level, xp = 0, context = 'dashboard' }) => {
   const { t } = useTranslation();
   const [messageIndex, setMessageIndex] = useState(0);
+  const [isVisible, setIsVisible] = useState(true);
 
   const messages = useMemo(() => {
     switch (context) {
@@ -28,11 +29,36 @@ const Animal: React.FC<AnimalProps> = ({ type, color, level, xp = 0, context = '
   }, [context, t]);
 
   useEffect(() => {
-    // cycle messages every 12 seconds like a soft talking pet
-    const interval = setInterval(() => {
-      setMessageIndex((prev) => (prev + 1) % messages.length);
-    }, 12000);
-    return () => clearInterval(interval);
+    // Message appears for 7 seconds, then disappears for 22 seconds
+    const SHOW_DURATION = 7000; // 7 seconds visible
+    const HIDE_DURATION = 22000; // 22 seconds hidden
+    
+    let showTimer: NodeJS.Timeout;
+    let hideTimer: NodeJS.Timeout;
+    
+    const cycleMessage = () => {
+      // Show the message
+      setIsVisible(true);
+      
+      // Hide after SHOW_DURATION
+      showTimer = setTimeout(() => {
+        setIsVisible(false);
+        
+        // Change to next message and show again after HIDE_DURATION
+        hideTimer = setTimeout(() => {
+          setMessageIndex((prev) => (prev + 1) % messages.length);
+          cycleMessage();
+        }, HIDE_DURATION);
+      }, SHOW_DURATION);
+    };
+    
+    // Start the cycle
+    cycleMessage();
+    
+    return () => {
+      clearTimeout(showTimer);
+      clearTimeout(hideTimer);
+    };
   }, [messages.length]);
 
   useEffect(() => {
@@ -74,11 +100,17 @@ const Animal: React.FC<AnimalProps> = ({ type, color, level, xp = 0, context = '
             {emoji}
           </span>
         </div>
-        <div className="animal-message">
-          <div className="animal-message-label">Message de ton compagnon</div>
+        <div 
+          className="animal-message"
+          style={{
+            opacity: isVisible ? 1 : 0,
+            transform: isVisible ? 'translateY(0)' : 'translateY(-10px)',
+            transition: 'opacity 0.5s ease-in-out, transform 0.5s ease-in-out',
+            pointerEvents: isVisible ? 'auto' : 'none'
+          }}
+        >
           <div className="animal-message-text">
             <div>{currentMessage}</div>
-            <div style={{ marginTop: '0.35rem', fontSize: '0.75rem', opacity: 0.75 }}>{xpHint}</div>
           </div>
         </div>
       </div>

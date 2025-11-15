@@ -10,7 +10,9 @@ const UserHeader: React.FC = () => {
   const { user, setUser } = useUser();
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isStreakDropdownOpen, setIsStreakDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const streakDropdownRef = useRef<HTMLDivElement>(null);
 
   const handleSignOut = async () => {
     const confirm = window.confirm(t('auth.signOutConfirm'));
@@ -25,54 +27,133 @@ const UserHeader: React.FC = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  // Fermer le dropdown si on clique à l'extérieur
+  const toggleStreakDropdown = () => {
+    setIsStreakDropdownOpen(!isStreakDropdownOpen);
+  };
+
+  const getStreakEmoji = (streak: number) => {
+    if (streak === 0) return '💧';
+    if (streak < 3) return '🔥';
+    if (streak < 7) return '🔥🔥';
+    if (streak < 14) return '🔥🔥🔥';
+    if (streak < 30) return '🌟';
+    return '👑';
+  };
+
+  const getStreakMessage = (streak: number) => {
+    if (streak === 0) return t('streaks.restart');
+    if (streak === 1) return t('streaks.oneDay');
+    if (streak < 7) return t('streaks.keepGoing');
+    if (streak < 14) return t('streaks.onFire');
+    if (streak < 30) return t('streaks.epic');
+    return t('streaks.legendary');
+  };
+
+  // Fermer les dropdowns si on clique à l'extérieur
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsDropdownOpen(false);
       }
+      if (streakDropdownRef.current && !streakDropdownRef.current.contains(event.target as Node)) {
+        setIsStreakDropdownOpen(false);
+      }
     };
 
-    if (isDropdownOpen) {
+    if (isDropdownOpen || isStreakDropdownOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isDropdownOpen]);
+  }, [isDropdownOpen, isStreakDropdownOpen]);
+
+  const isPersonalRecord = user && user.currentStreak === user.maxStreak && user.currentStreak > 0;
 
   return (
     <header className="app-header">
       <div className="header-content">
         {user && (
-          <div className="user-menu" ref={dropdownRef}>
-            <button
-              type="button"
-              className="user-avatar-btn"
-              onClick={toggleDropdown}
-              aria-label="User menu"
-            >
-              👤
-            </button>
-            {isDropdownOpen && (
-              <div className="user-dropdown">
-                <div className="user-dropdown-name">
-                  <strong>{user.name}</strong>
+          <>
+            {/* Streak Display */}
+            <div className="user-menu" ref={streakDropdownRef} style={{ marginRight: '0.75rem' }}>
+              <button
+                type="button"
+                className="user-avatar-btn"
+                onClick={toggleStreakDropdown}
+                aria-label="Streaks menu"
+                style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.85rem' }}
+              >
+                <span style={{ fontSize: '1rem' }}>{getStreakEmoji(user.currentStreak)}</span>
+                <span style={{ fontSize: '0.85rem', fontWeight: 500 }}>{user.currentStreak}</span>
+              </button>
+              {isStreakDropdownOpen && (
+                <div className="user-dropdown" style={{ minWidth: '200px', maxWidth: '220px' }}>
+                  <div className="user-dropdown-name" style={{ marginBottom: '0.75rem', textAlign: 'center' }}>
+                    <div style={{ fontSize: '1.75rem', marginBottom: '0.35rem' }}>
+                      {getStreakEmoji(user.currentStreak)}
+                    </div>
+                    <div style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '0.2rem' }}>
+                      {user.currentStreak}
+                    </div>
+                    <div style={{ fontSize: '0.8rem', opacity: 0.8 }}>
+                      {t('streaks.days')}
+                      {isPersonalRecord && <span style={{ marginLeft: '0.35rem' }}>🏆</span>}
+                    </div>
+                  </div>
+
+                  {user.currentStreak > 0 && (
+                    <div style={{ marginBottom: '0.5rem', padding: '0.5rem', background: 'rgba(255,255,255,0.05)', borderRadius: '6px' }}>
+                      <div style={{ fontSize: '0.75rem', marginBottom: '0.35rem' }}>
+                        {getStreakMessage(user.currentStreak)}
+                      </div>
+                      {user.maxStreak > 0 && (
+                        <div style={{ fontSize: '0.7rem', opacity: 0.7 }}>
+                          {t('streaks.personalBest')}: {user.maxStreak} {t('streaks.days')}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {user.currentStreak === 0 && (
+                    <div style={{ padding: '0.5rem', background: 'rgba(255,255,255,0.05)', borderRadius: '6px', fontSize: '0.75rem' }}>
+                      {t('streaks.getStarted')}
+                    </div>
+                  )}
                 </div>
-                <div className="user-dropdown-section">
-                  <LanguageSelector />
+              )}
+            </div>
+
+            {/* User Menu */}
+            <div className="user-menu" ref={dropdownRef}>
+              <button
+                type="button"
+                className="user-avatar-btn"
+                onClick={toggleDropdown}
+                aria-label="User menu"
+              >
+                👤
+              </button>
+              {isDropdownOpen && (
+                <div className="user-dropdown">
+                  <div className="user-dropdown-name">
+                    <strong>{user.name}</strong>
+                  </div>
+                  <div className="user-dropdown-section">
+                    <LanguageSelector />
+                  </div>
+                  <button
+                    type="button"
+                    className="btn btn-secondary btn-sm"
+                    onClick={handleSignOut}
+                  >
+                    {t('auth.signOut')}
+                  </button>
                 </div>
-                <button
-                  type="button"
-                  className="btn btn-secondary btn-sm"
-                  onClick={handleSignOut}
-                >
-                  {t('auth.signOut')}
-                </button>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          </>
         )}
       </div>
     </header>

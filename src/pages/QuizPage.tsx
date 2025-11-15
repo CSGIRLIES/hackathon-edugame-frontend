@@ -84,31 +84,31 @@ const QuizPage: React.FC = () => {
     return (
       <div className="page">
         <header className="page-header">
-          <h1 className="page-title">Mini quiz de révision ✨</h1>
+          <h1 className="page-title">{t('quiz.title')}</h1>
           <p className="page-subtitle">
-            Décris ton cours ou ton sujet. Ton compagnon génère des questions pour vérifier si tu as bien compris.
+            {t('quiz.subtitle')}
           </p>
         </header>
 
         <main>
           <section className="card quiz-card">
             <div className="card-header">
-              <h2 className="card-title">De quoi veux-tu parler aujourd'hui ?</h2>
+              <h2 className="card-title">{t('quiz.whatLearn')}</h2>
               <p className="card-subtitle">
-                Tu peux écrire un chapitre, un thème ("fractions", "révolution française"...) ou copier un bout de ton cours.
+                {t('quiz.topicLabel')}
               </p>
             </div>
 
             <div className="input-group">
               <label className="input-label" htmlFor="topic">
-                Ton sujet
+                {t('quiz.topicLabel')}
               </label>
               <textarea
                 id="topic"
                 className="textarea"
                 value={topic}
                 onChange={(e) => setTopic(e.target.value)}
-                placeholder="Ex : Les équations du 1er degré, ou copier/colle un paragraphe de ton cours"
+                placeholder={t('quiz.topicPlaceholder')}
                 required
               />
               {error && (
@@ -125,14 +125,14 @@ const QuizPage: React.FC = () => {
                 onClick={handleStartQuiz}
                 disabled={!topic.trim() || isLoading}
               >
-                {isLoading ? 'Génération en cours...' : 'Générer des questions'}
+                {isLoading ? t('quiz.generating') : t('quiz.generateButton')}
               </button>
               <button
                 type="button"
                 className="btn btn-secondary"
                 onClick={() => navigate('/dashboard')}
               >
-                Retour au tableau de bord
+                {t('quiz.backToDashboard')}
               </button>
             </div>
           </section>
@@ -146,9 +146,9 @@ const QuizPage: React.FC = () => {
   return (
     <div className="page">
       <header className="page-header">
-        <h1 className="page-title">Quiz sur : {topic}</h1>
+        <h1 className="page-title">{t('quiz.title')}</h1>
         <p className="page-subtitle">
-          Réponds aux questions pour prouver à ton compagnon que tu as bien travaillé.
+          {t('quiz.subtitle')}
         </p>
       </header>
 
@@ -156,9 +156,9 @@ const QuizPage: React.FC = () => {
         <section className="card quiz-card">
           <div className="card-header">
             <h2 className="card-title">
-              Question {currentQuestion + 1} / {questions.length}
+              {t('quiz.question', { current: currentQuestion + 1, total: questions.length })}
             </h2>
-            <p className="card-subtitle">Score actuel : {score} XP potentiels</p>
+            <p className="card-subtitle">{t('quiz.xpEarned')} {score} XP</p>
           </div>
 
           <p>{current.question}</p>

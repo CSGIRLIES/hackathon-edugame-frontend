@@ -68,6 +68,10 @@
     "startLearning": "Commencer une session d'apprentissage",
     "quickQuiz": "Quiz rapide",
     "companionName": "Ton Compagnon",
+    "companionDescription": "{{name}} évolue en fonction de ton XP et t'envoie des petits messages.",
+    "todaySessionTitle": "Ta session du jour",
+    "todaySessionDescription": "Choisis comment tu veux apprendre aujourd'hui. Ton compagnon suivra ton rythme.",
+    "tip": "Astuce : une session pomodoro + un quiz à la fin = beaucoup d'XP pour {{name}} ✨",
     "levelBaby": "Bébé",
     "levelAdolescent": "Adolescent",
     "levelAdult": "Adulte"
@@ -150,6 +154,19 @@
       "Prends ton temps, pas de précipitation !",
       "Chaque réponse t'apprend quelque chose !"
     ]
+  },
+  "streaks": {
+    "title": "Séries",
+    "subtitle": "Reviens chaque jour pour augmenter ta série !",
+    "days": "jours",
+    "restart": "Recommence ta série aujourd'hui !",
+    "oneDay": "1 jour ! C'est un bon début !",
+    "keepGoing": "Continue comme ça !",
+    "onFire": "Tu es en feu ! 🔥",
+    "epic": "Série épique ! Continue ! 🌟",
+    "legendary": "Tu es une légende ! 👑",
+    "personalBest": "Record personnel",
+    "getStarted": "Commence une nouvelle série en apprenant aujourd'hui !"
   },
   "errors": {
     "generic": "Une erreur s'est produite. Veuillez réessayer.",

@@ -68,6 +68,10 @@
     "startLearning": "بدء جلسة التعلم",
     "quickQuiz": "اختبار سريع",
     "companionName": "رفيقك",
+    "companionDescription": "{{name}} يتطور بناءً على XP الخاص بك ويرسل لك رسائل صغيرة.",
+    "todaySessionTitle": "جلستك اليوم",
+    "todaySessionDescription": "اختر كيف تريد أن تتعلم اليوم. سيتبع رفيقك وتيرتك.",
+    "tip": "نصيحة: جلسة بومودورو + اختبار في النهاية = الكثير من XP لـ {{name}} ✨",
     "levelBaby": "طفل",
     "levelAdolescent": "مراهق",
     "levelAdult": "بالغ"
