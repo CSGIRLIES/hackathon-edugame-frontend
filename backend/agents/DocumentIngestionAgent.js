@@ -5,8 +5,28 @@ import { createWorker } from "tesseract.js";
 import { fileTypeFromBuffer } from "file-type";
 import fetch from "node-fetch";
 import { createRequire } from "module";
+import { JSDOM } from "jsdom";
 
-// ===== PDF parsing (disabled for Node.js 18 compatibility) =====
+// ===== Set up JSDOM for PDF parsing =====
+const { window } = new JSDOM();
+global.window = window;
+global.document = window.document;
+global.DOMMatrix = window.DOMMatrix || class DOMMatrix {
+  constructor(args) {
+    if (Array.isArray(args)) {
+      this.matrix = args;
+    } else {
+      this.matrix = [1, 0, 0, 1, 0, 0];
+    }
+  }
+  // minimal methods if needed
+};
+global.CanvasRenderingContext2D = window.CanvasRenderingContext2D;
+global.Image = window.Image;
+
+// ===== PDF parsing =====
+const require = createRequire(import.meta.url);
+const { PDFParse } = require("pdf-parse");
 
 // ===== Vector Store (JSON) =====
 const DB_PATH = path.resolve("data/vectorstore.json");
@@ -74,11 +94,11 @@ async function parseDocument(buffer, filename) {
   const detected = await fileTypeFromBuffer(buffer).catch(() => null);
   const mime = detected?.mime || "";
 
-  // PDF handling (disabled for Node.js 18 compatibility issues)
+  // PDF handling v2
   if (mime === "application/pdf" || filename.endsWith(".pdf")) {
-    // TODO: Implement PDF text extraction in Node.js
-    console.warn("PDF text extraction not available - returning empty text");
-    return "";
+    const parser = new PDFParse({ data: buffer }); // buffer input
+    const result = await parser.getText();
+    return result.text || "";
   }
 
   // DOCX handling
