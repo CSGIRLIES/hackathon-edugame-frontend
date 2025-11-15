@@ -55,6 +55,12 @@ const AuthPage: React.FC = () => {
           animalColor: profile.animal_color,
           xp: profile.xp,
           level: (profile.level === 'adolescent' || profile.level === 'teen' ? 'adolescent' : profile.level) as 'baby' | 'adolescent' | 'adult',
+          currentStreak: profile.current_streak,
+          maxStreak: profile.max_streak,
+          lastStudyDate: profile.last_study_date,
+          parentEmail: profile.parent_email,
+          studyGoalMinutes: profile.study_goal_minutes,
+          totalStudyTime: profile.total_study_time,
         };
 
         setUser(appUser);

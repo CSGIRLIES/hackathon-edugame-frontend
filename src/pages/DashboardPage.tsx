@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useUser } from '../contexts/UserContext.tsx';
 import Animal from '../components/Animal.tsx';
+import StreaksWidget from '../components/StreaksWidget.tsx';
 
 const DashboardPage: React.FC = () => {
   const { t } = useTranslation();
@@ -77,6 +78,8 @@ const DashboardPage: React.FC = () => {
             Astuce : une session pomodoro + un quiz à la fin = beaucoup d'XP pour {user.animalName} ✨
           </p>
         </section>
+
+        <StreaksWidget />
       </main>
     </div>
   );

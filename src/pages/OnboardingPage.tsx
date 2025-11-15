@@ -53,6 +53,12 @@ const OnboardingPage: React.FC = () => {
         animalColor,
         xp: 0,
         level: 'baby' as const,
+        currentStreak: 0,
+        maxStreak: 0,
+        lastStudyDate: undefined,
+        parentEmail: undefined,
+        studyGoalMinutes: 0,
+        totalStudyTime: 0,
       };
 
       const success = await createProfile({
@@ -63,6 +69,12 @@ const OnboardingPage: React.FC = () => {
         animal_color: animalColor,
         xp: 0,
         level: 'baby',
+        current_streak: 0,
+        max_streak: 0,
+        last_study_date: null,
+        parent_email: null,
+        study_goal_minutes: 0,
+        total_study_time: 0,
       });
 
       if (!success) {

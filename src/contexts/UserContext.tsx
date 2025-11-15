@@ -9,6 +9,12 @@ export interface User {
   animalColor: string;
   xp: number;
   level: 'baby' | 'adolescent' | 'adult';
+  currentStreak: number;
+  maxStreak: number;
+  lastStudyDate?: string;
+  parentEmail?: string;
+  studyGoalMinutes: number;
+  totalStudyTime: number;
 }
 
 export interface LearningSession {

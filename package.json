@@ -15,7 +15,13 @@
     "react-scripts": "5.0.1",
     "typescript": "^4.4.2"
   },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
   "scripts": {
+    "dev": "concurrently \"cd backend && npm start\" \"npm start\"",
+    "dev:frontend": "react-scripts start",
+    "dev:backend": "cd backend && npm start",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

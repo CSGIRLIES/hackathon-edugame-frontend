@@ -8,6 +8,12 @@ export interface CompanionProfile {
   animal_color: string;
   xp: number;
   level: string;
+  current_streak: number;
+  max_streak: number;
+  last_study_date?: string;
+  parent_email?: string;
+  study_goal_minutes: number;
+  total_study_time: number;
   created_at?: string;
   updated_at?: string;
 }
@@ -59,6 +65,12 @@ export async function createProfile(profile: CompanionProfile): Promise<boolean>
         animal_color: profile.animal_color,
         xp: profile.xp,
         level: profile.level,
+        current_streak: profile.current_streak || 0,
+        max_streak: profile.max_streak || 0,
+        last_study_date: profile.last_study_date || null,
+        parent_email: profile.parent_email || null,
+        study_goal_minutes: profile.study_goal_minutes || 0,
+        total_study_time: profile.total_study_time || 0,
       },
     ]);
 
