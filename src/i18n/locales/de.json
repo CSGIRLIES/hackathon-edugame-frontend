@@ -20,7 +20,9 @@
     "loggingIn": "Anmelden...",
     "signingUp": "Konto wird erstellt...",
     "authError": "Authentifizierung ist nicht konfiguriert (Supabase fehlt).",
-    "errorOccurred": "Ein Fehler ist aufgetreten."
+    "errorOccurred": "Ein Fehler ist aufgetreten.",
+    "signOut": "Abmelden",
+    "signOutConfirm": "Bist du sicher, dass du dich abmelden möchtest?"
   },
   "onboarding": {
     "title": "Erstelle dein legendäres Duo ✨",
@@ -66,6 +68,10 @@
     "startLearning": "Lernsitzung starten",
     "quickQuiz": "Schnelles Quiz",
     "companionName": "Dein Begleiter",
+    "companionDescription": "{{name}} entwickelt sich basierend auf deinen XP und sendet dir kleine Nachrichten.",
+    "todaySessionTitle": "Deine heutige Sitzung",
+    "todaySessionDescription": "Wähle, wie du heute lernen möchtest. Dein Begleiter wird deinem Tempo folgen.",
+    "tip": "Tipp: eine Pomodoro-Sitzung + ein Quiz am Ende = viele XP für {{name}} ✨",
     "levelBaby": "Baby",
     "levelAdolescent": "Jugendlicher",
     "levelAdult": "Erwachsener"

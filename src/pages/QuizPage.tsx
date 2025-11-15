@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useUser } from '../contexts/UserContext.tsx';
+import Modal from '../components/Modal.tsx';
 
 interface Question {
   question: string;
@@ -58,6 +60,7 @@ const buildWolframInput = (questionText: string): string => {
 };
 
 const QuizPage: React.FC = () => {
+  const { t } = useTranslation();
   const [topic, setTopic] = useState('');
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -66,27 +69,8 @@ const QuizPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [wolframHistory, setWolframHistory] = useState<WolframHistoryEntry[]>([]);
-  const [wolframLoading, setWolframLoading] = useState(false);
-  const [wolframError, setWolframError] = useState<string | null>(null);
-
   const { updateXP } = useUser();
   const navigate = useNavigate();
-  const location = useLocation();
-
-  // Check for themed quiz data in location state
-  useEffect(() => {
-    if (location.state?.themedQuiz) {
-      const { themeData, questions: themedQuestions } = location.state as any;
-      setTopic(`${themeData.theme} - ${themeData.subTheme} (${themeData.title})`);
-      setQuestions(themedQuestions);
-      setStarted(true);
-      setScore(0);
-      setCurrentQuestion(0);
-      setWolframHistory([]);
-      setWolframError(null);
-    }
-  }, [location.state]);
 
   const handleStartQuiz = async () => {
     const trimmed = topic.trim();
@@ -181,17 +165,19 @@ const QuizPage: React.FC = () => {
     const current = questions[currentQuestion];
     const isCorrect = index === current.correct;
 
-    if (isCorrect) {
-      setScore((prev) => prev + 20);
-    }
+    // Calculate the new score
+    const newScore = isCorrect ? score + 20 : score;
 
     if (currentQuestion < questions.length - 1) {
+      // Not the last question, just update score and move to next
+      setScore(newScore);
       setCurrentQuestion((prev) => prev + 1);
     } else {
-      const finalScore = isCorrect ? score + 20 : score;
-      updateXP(finalScore);
-      alert(`Quiz terminé ! Tu as gagné ${finalScore} XP pour ton compagnon ✨`);
-      navigate('/dashboard');
+      // Last question, update score and show completion modal
+      setScore(newScore);
+      updateXP(newScore);
+      setFinalScore(newScore);
+      setShowCompletionModal(true);
     }
   };
 
@@ -199,31 +185,31 @@ const QuizPage: React.FC = () => {
     return (
       <div className="page">
         <header className="page-header">
-          <h1 className="page-title">Mini quiz de révision ✨</h1>
+          <h1 className="page-title">{t('quiz.title')}</h1>
           <p className="page-subtitle">
-            Décris ton cours ou ton sujet. Ton compagnon génère des questions pour vérifier si tu as bien compris.
+            {t('quiz.subtitle')}
           </p>
         </header>
 
         <main>
           <section className="card quiz-card">
             <div className="card-header">
-              <h2 className="card-title">De quoi veux-tu parler aujourd'hui ?</h2>
+              <h2 className="card-title">{t('quiz.whatLearn')}</h2>
               <p className="card-subtitle">
-                Tu peux écrire un chapitre, un thème ("fractions", "révolution française"...) ou copier un bout de ton cours.
+                {t('quiz.topicLabel')}
               </p>
             </div>
 
             <div className="input-group">
               <label className="input-label" htmlFor="topic">
-                Ton sujet
+                {t('quiz.topicLabel')}
               </label>
               <textarea
                 id="topic"
                 className="textarea"
                 value={topic}
                 onChange={(e) => setTopic(e.target.value)}
-                placeholder="Ex : Les équations du 1er degré, ou copier/colle un paragraphe de ton cours"
+                placeholder={t('quiz.topicPlaceholder')}
                 required
               />
               {error && (
@@ -240,14 +226,14 @@ const QuizPage: React.FC = () => {
                 onClick={handleStartQuiz}
                 disabled={!topic.trim() || isLoading}
               >
-                {isLoading ? 'Génération en cours...' : 'Générer des questions'}
+                {isLoading ? t('quiz.generating') : t('quiz.generateButton')}
               </button>
               <button
                 type="button"
                 className="btn btn-secondary"
                 onClick={() => navigate('/dashboard')}
               >
-                Retour au tableau de bord
+                {t('quiz.backToDashboard')}
               </button>
             </div>
           </section>
@@ -261,9 +247,9 @@ const QuizPage: React.FC = () => {
   return (
     <div className="page">
       <header className="page-header">
-        <h1 className="page-title">Quiz sur : {topic}</h1>
+        <h1 className="page-title">{t('quiz.title')}</h1>
         <p className="page-subtitle">
-          Réponds aux questions pour prouver à ton compagnon que tu as bien travaillé.
+          {t('quiz.subtitle')}
         </p>
       </header>
 
@@ -271,9 +257,9 @@ const QuizPage: React.FC = () => {
         <section className="card quiz-card">
           <div className="card-header">
             <h2 className="card-title">
-              Question {currentQuestion + 1} / {questions.length}
+              {t('quiz.question', { current: currentQuestion + 1, total: questions.length })}
             </h2>
-            <p className="card-subtitle">Score actuel : {score} XP potentiels</p>
+            <p className="card-subtitle">{t('quiz.xpEarned')} {score} XP</p>
           </div>
 
           <p>{current.question}</p>
@@ -350,6 +336,19 @@ const QuizPage: React.FC = () => {
           </section>
         )}
       </main>
+
+      <Modal
+        isOpen={showCompletionModal}
+        onClose={() => setShowCompletionModal(false)}
+        title="✨ Félicitations !"
+        message={`Quiz terminé ! Tu as gagné ${finalScore} XP pour ton compagnon. Continue comme ça ! 🎉`}
+        icon="✨"
+        buttonText="Retour au tableau de bord"
+        buttonAction={() => {
+          setShowCompletionModal(false);
+          navigate('/dashboard');
+        }}
+      />
     </div>
   );
 };

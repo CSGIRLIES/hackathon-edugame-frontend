@@ -1,16 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect , useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useUser } from '../contexts/UserContext.tsx';
 import Animal from '../components/Animal.tsx';
-import StreaksWidget from '../components/StreaksWidget.tsx';
-import { getFoodItem } from '../data/foodItems';
 
 const DashboardPage: React.FC = () => {
   const { t } = useTranslation();
-  const { user, updateXP, subtractXP } = useUser();
+  const { user, checkStreakExpiry } = useUser();
   const navigate = useNavigate();
-  const [foodFeedback, setFoodFeedback] = useState<string | null>(null);
+
+  // Check if streak has expired when dashboard loads
+  useEffect(() => {
+    if (user) {
+      checkStreakExpiry();
+    }
+  }, [user?.id]); // Only run when user id changes (on mount/user change)
 
   if (!user) {
     navigate('/');
@@ -64,7 +68,7 @@ const DashboardPage: React.FC = () => {
           <div className="card-header">
             <h2 className="card-title">{t('dashboard.companionName')}</h2>
             <p className="card-subtitle">
-              {user.animalName} évolue en fonction de ton XP et t'envoie des petits messages.
+              {t('dashboard.companionDescription', { name: user.animalName })}
             </p>
           </div>
 
@@ -104,9 +108,9 @@ const DashboardPage: React.FC = () => {
 
         <section className="card">
           <div className="card-header">
-            <h2 className="card-title">Ta session du jour</h2>
+            <h2 className="card-title">{t('dashboard.todaySessionTitle')}</h2>
             <p className="card-subtitle">
-              Choisis comment tu veux apprendre aujourd'hui. Ton compagnon suivra ton rythme.
+              {t('dashboard.todaySessionDescription')}
             </p>
           </div>
 
@@ -126,11 +130,9 @@ const DashboardPage: React.FC = () => {
           </div>
 
           <p className="helper-text" style={{ marginTop: '0.5rem' }}>
-            Astuce : une session pomodoro + un quiz à la fin = beaucoup d'XP pour {user.animalName} ✨
+            {t('dashboard.tip', { name: user.animalName })}
           </p>
         </section>
-
-        <StreaksWidget />
       </main>
     </div>
   );

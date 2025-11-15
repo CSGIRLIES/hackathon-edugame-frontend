@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useUser } from '../contexts/UserContext.tsx';
 import Animal from '../components/Animal.tsx';
+import Modal from '../components/Modal.tsx';
 
 const LearningPage: React.FC = () => {
+  const { t } = useTranslation();
   const [topic, setTopic] = useState('');
   const [usePomodoro, setUsePomodoro] = useState(true);
   const [timeLeft, setTimeLeft] = useState(25 * 60); // 25 minutes in seconds
@@ -19,7 +22,12 @@ const LearningPage: React.FC = () => {
   const [planError, setPlanError] = useState<string | null>(null);
   const [studyPlan, setStudyPlan] = useState<any | null>(null);
 
-  const { user, updateXP } = useUser();
+  const [showCompletionModal, setShowCompletionModal] = useState(false);
+  const [sessionXP, setSessionXP] = useState(0);
+
+  const [checkedTasks, setCheckedTasks] = useState<boolean[]>([false, false, false]);
+
+  const { user, updateXP, updateStreak } = useUser();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,20 +39,18 @@ const LearningPage: React.FC = () => {
     } else if (isWorking && timeLeft === 0) {
       const xpGained = 25; // 25 minutes = 25 XP
       updateXP(xpGained);
-      alert(`Bravo ! Tu as terminé un focus de 25 min. ${xpGained} XP pour ${user.animalName} ✨`);
-      navigate('/quiz');
+      updateStreak(); // Update streak when session completes
+      setSessionXP(xpGained);
+      setShowCompletionModal(true);
     }
     return () => window.clearTimeout(timer);
-  }, [timeLeft, isWorking, isPaused, updateXP, navigate, user]);
+  }, [timeLeft, isWorking, isPaused, updateXP, updateStreak, user]);
 
   const handleStart = () => {
     if (topic.trim()) {
       setIsWorking(true);
       setIsPaused(false);
       setTimeLeft(25 * 60);
-      alert(
-        `Plan d'apprentissage pour ${topic}:\n1. Relire le cours calmement\n2. Faire 2-3 exercices\n3. Noter ce que tu dois revoir au prochain cycle`
-      );
     }
   };
 
@@ -139,39 +145,39 @@ const LearningPage: React.FC = () => {
   return (
     <div className="page">
       <header className="page-header">
-        <h1 className="page-title">Session d'apprentissage</h1>
+        <h1 className="page-title">{t('learning.title')}</h1>
         <p className="page-subtitle">
-          On se concentre ensemble pendant 25 minutes, puis ton compagnon te propose un quiz pour vérifier que tout est bien assimilé.
+          {t('learning.subtitle')}
         </p>
       </header>
 
       <main className="layout-grid">
         <section className="card learning-card">
-          <div className="card-header">
-            <h2 className="card-title">Prépare ta session</h2>
-            <p className="card-subtitle">
-              Décris ce que tu vas réviser. Le quiz de fin utilisera ce contexte.
-            </p>
-          </div>
-
           {!isWorking && (
             <>
+              <div className="card-header">
+                <h2 className="card-title">{t('learning.prepareTitle')}</h2>
+                <p className="card-subtitle">
+                  {t('learning.prepareSubtitle')}
+                </p>
+              </div>
+
               <div className="input-group">
                 <label className="input-label" htmlFor="topic">
-                  Ton cours / chapitre
+                  {t('learning.topicLabel')}
                 </label>
                 <textarea
                   id="topic"
                   className="textarea"
                   value={topic}
                   onChange={(e) => setTopic(e.target.value)}
-                  placeholder="Ex : Chapitre sur les fonctions affines, ou copier un extrait de ton cours"
+                  placeholder={t('learning.topicPlaceholder')}
                   required
                 />
               </div>
 
               <div className="input-group">
-                <label className="input-label">Mode</label>
+                <label className="input-label">{t('learning.modeLabel')}</label>
                 <label className="helper-text">
                   <input
                     type="checkbox"
@@ -179,7 +185,7 @@ const LearningPage: React.FC = () => {
                     onChange={() => setUsePomodoro(!usePomodoro)}
                     style={{ marginRight: 8 }}
                   />
-                  Utiliser le mode pomodoro (25 min focus / 5 min pause)
+                  {t('learning.pomodoroMode')}
                 </label>
               </div>
 
@@ -190,14 +196,14 @@ const LearningPage: React.FC = () => {
                   onClick={handleStart}
                   disabled={!topic.trim()}
                 >
-                  Lancer la session
+                  {t('learning.startSession')}
                 </button>
                 <button
                   type="button"
                   className="btn btn-secondary"
                   onClick={() => navigate('/dashboard')}
                 >
-                  Retour au tableau de bord
+                  {t('learning.backToDashboard')}
                 </button>
               </div>
             </>
@@ -206,9 +212,9 @@ const LearningPage: React.FC = () => {
           {isWorking && (
             <>
               <div className="card-header" style={{ marginBottom: '1rem' }}>
-                <h2 className="card-title">En plein focus sur : {topic}</h2>
+                <h2 className="card-title">{t('learning.focusingOn', { topic })}</h2>
                 <p className="card-subtitle">
-                  Quand le temps est écoulé, tu passes automatiquement sur un quiz.
+                  {t('learning.focusSubtitle')}
                 </p>
               </div>
 
@@ -219,13 +225,72 @@ const LearningPage: React.FC = () => {
                 </div>
               </div>
 
+              <div style={{ 
+                background: 'rgba(56, 189, 248, 0.1)', 
+                border: '1px solid rgba(56, 189, 248, 0.3)',
+                borderRadius: '0.75rem',
+                padding: '1rem',
+                marginBottom: '1.25rem',
+                textAlign: 'left'
+              }}>
+                <h3 style={{ 
+                  fontSize: '0.9rem', 
+                  color: 'var(--accent-blue)', 
+                  marginBottom: '0.75rem',
+                  fontWeight: 600
+                }}>
+                  📚 Plan d'apprentissage
+                </h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                  {[
+                    'Relire le cours calmement',
+                    'Faire 2-3 exercices',
+                    'Noter ce que tu dois revoir au prochain cycle'
+                  ].map((task, index) => (
+                    <label 
+                      key={index}
+                      style={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        gap: '0.5rem',
+                        cursor: 'pointer',
+                        fontSize: '0.85rem',
+                        transition: 'opacity 0.2s ease'
+                      }}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={checkedTasks[index]}
+                        onChange={() => {
+                          const newChecked = [...checkedTasks];
+                          newChecked[index] = !newChecked[index];
+                          setCheckedTasks(newChecked);
+                        }}
+                        style={{ 
+                          width: '16px', 
+                          height: '16px',
+                          cursor: 'pointer',
+                          accentColor: 'var(--accent-blue)'
+                        }}
+                      />
+                      <span style={{ 
+                        textDecoration: checkedTasks[index] ? 'line-through' : 'none',
+                        opacity: checkedTasks[index] ? 0.6 : 1
+                      }}>
+                        {task}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
               <div className="btn-row">
                 <button
                   type="button"
                   className="btn btn-secondary"
                   onClick={() => setIsPaused((p) => !p)}
                 >
-                  {isPaused ? 'Reprendre' : 'Mettre en pause'}
+                  {isPaused ? t('learning.resume') : t('learning.pause')}
                 </button>
                 <button
                   type="button"
@@ -236,7 +301,7 @@ const LearningPage: React.FC = () => {
                     setTimeLeft(25 * 60);
                   }}
                 >
-                  Terminer sans quiz
+                  {t('learning.endWithoutQuiz')}
                 </button>
               </div>
             </>
@@ -245,9 +310,9 @@ const LearningPage: React.FC = () => {
 
         <section className="card">
           <div className="card-header">
-            <h2 className="card-title">Ton compagnon te regarde travailler</h2>
+            <h2 className="card-title">{t('learning.companionWatching')}</h2>
             <p className="card-subtitle">
-              {user.animalName} observe ta progression et t'encourage pendant toute la session.
+              {t('learning.companionSubtitle', { name: user.animalName })}
             </p>
           </div>
 
@@ -261,17 +326,17 @@ const LearningPage: React.FC = () => {
 
           <div style={{ marginTop: '1.5rem' }}>
             <h3 className="card-title" style={{ fontSize: '1rem', marginBottom: '0.5rem' }}>
-              Ajouter tes documents de cours
+              {t('learning.uploadTitle')}
             </h3>
             <p className="helper-text">
-              Tu peux envoyer un PDF / DOCX / image, il sera découpé en petits morceaux pour que l'IA crée des quiz et des plans d'étude plus précis.
+              {t('learning.uploadSubtitle')}
             </p>
             <div className="input-group" style={{ marginTop: '0.5rem' }}>
               <input type="file" onChange={handleFileChange} />
             </div>
             <div className="btn-row">
               <button type="button" className="btn btn-secondary" onClick={handleUpload}>
-                Envoyer le document
+                {t('learning.uploadButton')}
               </button>
             </div>
             {uploadStatus && (
@@ -288,14 +353,14 @@ const LearningPage: React.FC = () => {
 
           <div style={{ marginTop: '1.5rem' }}>
             <h3 className="card-title" style={{ fontSize: '1rem', marginBottom: '0.5rem' }}>
-              Plan d'étude personnalisé
+              {t('learning.planTitle')}
             </h3>
             <p className="helper-text">
-              Dis combien de minutes tu as aujourd'hui et l'IA crée un planning Pomodoro + quiz à partir de tes documents.
+              {t('learning.planSubtitle')}
             </p>
             <div className="input-group" style={{ maxWidth: 220, marginTop: '0.5rem' }}>
               <label className="input-label" htmlFor="availableTime">
-                Temps disponible (minutes)
+                {t('learning.planTimeLabel')}
               </label>
               <input
                 id="availableTime"
@@ -313,7 +378,7 @@ const LearningPage: React.FC = () => {
                 onClick={handleGeneratePlan}
                 disabled={isPlanLoading}
               >
-                {isPlanLoading ? 'Génération en cours...' : 'Générer mon plan'}
+                {isPlanLoading ? t('learning.planGenerating') : t('learning.planGenerate')}
               </button>
             </div>
             {planError && (
@@ -324,17 +389,17 @@ const LearningPage: React.FC = () => {
             {studyPlan && (
               <div style={{ marginTop: '0.75rem', fontSize: '0.85rem' }}>
                 <p className="helper-text">
-                  Temps total : {studyPlan.totalTime} min • Cycles : {studyPlan.pomodoroCount}
+                  {t('learning.planTotalTime', { time: studyPlan.totalTime, count: studyPlan.pomodoroCount })}
                 </p>
                 {Array.isArray(studyPlan.cycles) && (
                   <ul style={{ paddingLeft: '1.2rem', marginTop: '0.5rem' }}>
                     {studyPlan.cycles.slice(0, 3).map((cycle: any, idx: number) => (
                       <li key={idx} style={{ marginBottom: '0.35rem' }}>
-                        <strong>Cycle {cycle.cycleNumber}</strong> : {cycle.focusTask}
+                        <strong>{t('learning.planCycle', { number: cycle.cycleNumber })}</strong> : {cycle.focusTask}
                       </li>
                     ))}
                     {studyPlan.cycles.length > 3 && (
-                      <li className="helper-text">(... d'autres cycles sont disponibles dans la réponse brute)</li>
+                      <li className="helper-text">{t('learning.planMoreCycles')}</li>
                     )}
                   </ul>
                 )}
@@ -343,6 +408,28 @@ const LearningPage: React.FC = () => {
           </div>
         </section>
       </main>
+
+      <Modal
+        isOpen={showCompletionModal}
+        onClose={() => {
+          setShowCompletionModal(false);
+          setIsWorking(false);
+          setCheckedTasks([false, false, false]);
+        }}
+        title="🎉 Bravo !"
+        message={`Tu as terminé une session de 25 minutes ! ${sessionXP} XP gagnés pour ${user.animalName}. C'est l'heure de tester tes connaissances !`}
+        icon="🎉"
+        buttonText="Commencer le quiz"
+        buttonAction={() => {
+          setShowCompletionModal(false);
+          setIsWorking(false);
+          setCheckedTasks([false, false, false]);
+          // Small delay to ensure modal closes before navigation
+          setTimeout(() => {
+            navigate('/quiz', { state: { topic } });
+          }, 100);
+        }}
+      />
     </div>
   );
 };

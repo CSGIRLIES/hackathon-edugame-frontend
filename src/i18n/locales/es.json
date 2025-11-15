@@ -68,6 +68,10 @@
     "startLearning": "Iniciar Sesión de Aprendizaje",
     "quickQuiz": "Quiz Rápido",
     "companionName": "Tu Compañero",
+    "companionDescription": "{{name}} evoluciona según tu XP y te envía pequeños mensajes.",
+    "todaySessionTitle": "Tu sesión de hoy",
+    "todaySessionDescription": "Elige cómo quieres aprender hoy. Tu compañero seguirá tu ritmo.",
+    "tip": "Consejo: una sesión pomodoro + un quiz al final = mucho XP para {{name}} ✨",
     "levelBaby": "Bebé",
     "levelAdolescent": "Adolescente",
     "levelAdult": "Adulto"
