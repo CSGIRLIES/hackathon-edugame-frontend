@@ -1,5 +1,6 @@
 import express from "express";
 import fetch from "node-fetch";
+import { getThemeData, getThemesByCategory } from "../data/themePrompts.js";
 
 const router = express.Router();
 
@@ -81,6 +82,50 @@ router.post("/from-text", async (req, res) => {
   } catch (e) {
     console.error("[QuizRoute] Error generating quiz:", e);
     res.status(500).json({ error: "Failed to generate quiz" });
+  }
+});
+
+// Get available themes
+router.get("/themes", (req, res) => {
+  try {
+    const themes = getThemesByCategory();
+    res.json({ status: "success", themes });
+  } catch (e) {
+    console.error("[QuizRoute] Error getting themes:", e);
+    res.status(500).json({ error: "Failed to get themes" });
+  }
+});
+
+// Generate quiz from theme
+router.post("/from-theme", async (req, res) => {
+  try {
+    const { themeId, numQuestions } = req.body || {};
+    if (!themeId || typeof themeId !== "string") {
+      return res.status(400).json({ error: "Missing or invalid 'themeId'" });
+    }
+
+    const themeData = getThemeData(themeId);
+    if (!themeData) {
+      return res.status(404).json({ error: "Theme not found" });
+    }
+
+    const count = typeof numQuestions === "number" ? numQuestions : 3;
+    const topic = themeData.prompt;
+    const quiz = await generateQuizFromText(topic, count);
+    res.json({
+      status: "success",
+      themeId,
+      themeData: {
+        theme: themeData.theme,
+        subTheme: themeData.subTheme,
+        difficulty: themeData.difficulty,
+        title: themeData.title
+      },
+      ...quiz
+    });
+  } catch (e) {
+    console.error("[QuizRoute] Error generating themed quiz:", e);
+    res.status(500).json({ error: "Failed to generate themed quiz" });
   }
 });
 

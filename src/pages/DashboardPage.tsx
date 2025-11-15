@@ -69,8 +69,11 @@ const DashboardPage: React.FC = () => {
             <button className="btn btn-primary" onClick={() => navigate('/learning')}>
               {t('dashboard.startLearning')}
             </button>
-            <button className="btn btn-secondary" onClick={() => navigate('/quiz')}>
-              {t('dashboard.quickQuiz')}
+            <button className="btn btn-secondary" onClick={() => navigate('/quiz/themes')}>
+              Thèmes de Quiz
+            </button>
+            <button className="btn btn-outline" onClick={() => navigate('/quiz')}>
+              Quiz personnalisé
             </button>
           </div>
 

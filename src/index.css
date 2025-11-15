@@ -164,6 +164,18 @@ body {
   transform: translateY(-1px);
 }
 
+.btn-outline {
+  background: transparent;
+  color: var(--text-main);
+  border: 2px solid rgba(148, 163, 184, 0.4);
+}
+
+.btn-outline:hover {
+  background: rgba(15, 23, 42, 0.9);
+  border-color: var(--accent-blue);
+  transform: translateY(-1px);
+}
+
 .btn-ghost {
   background: transparent;
   color: var(--text-muted);
@@ -489,6 +501,107 @@ body {
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+/* QUIZ THEMES PAGE */
+
+.theme-tabs {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.theme-tab {
+  padding: 0.75rem 1.5rem;
+  border: 2px solid rgba(148, 163, 184, 0.4);
+  background: rgba(15, 23, 42, 0.9);
+  border-radius: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--text-main);
+}
+
+.theme-tab:hover {
+  border-color: var(--accent-blue);
+}
+
+.theme-tab.active {
+  border-color: var(--accent-blue);
+  background: var(--accent-blue);
+  color: #0b1020;
+}
+
+.quiz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.quiz-card {
+  border: 2px solid rgba(148, 163, 184, 0.4);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  background: rgba(15, 23, 42, 0.9);
+  transition: all 0.2s;
+}
+
+.quiz-card:hover {
+  border-color: var(--accent-blue);
+  box-shadow: 0 4px 12px rgba(56, 189, 248, 0.15);
+}
+
+.quiz-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+
+.quiz-card-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text-main);
+}
+
+.difficulty-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.difficulty-beginner {
+  background: rgba(34, 197, 94, 0.2);
+  color: #bbf7d0;
+}
+
+.difficulty-intermediate {
+  background: rgba(245, 158, 11, 0.2);
+  color: #fed7aa;
+}
+
+.difficulty-advanced {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+}
+
+.quiz-card-subtitle {
+  font-weight: 500;
+  color: var(--text-muted);
+  margin: 0.5rem 0;
+}
+
+.quiz-card-description {
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.quiz-start-btn {
+  width: 100%;
 }
 
 /* LANGUAGE SELECTOR */

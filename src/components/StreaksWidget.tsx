@@ -76,5 +76,4 @@ const StreaksWidget: React.FC = () => {
   );
 };
 
-export default StreaksWidget;</parameter>
-</xai:function_call>
+export default StreaksWidget;

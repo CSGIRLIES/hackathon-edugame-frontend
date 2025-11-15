@@ -1,4 +1,4 @@
-import { supabase } from './supabaseClient';
+import { supabase } from './supabaseClient.ts';
 
 export interface CompanionProfile {
   user_id: string;

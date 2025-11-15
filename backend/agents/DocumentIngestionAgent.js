@@ -6,9 +6,7 @@ import { fileTypeFromBuffer } from "file-type";
 import fetch from "node-fetch";
 import { createRequire } from "module";
 
-// ===== PDFParse v2 for Node ESM =====
-const require = createRequire(import.meta.url);
-const { PDFParse } = require("pdf-parse");
+// ===== PDF parsing (disabled for Node.js 18 compatibility) =====
 
 // ===== Vector Store (JSON) =====
 const DB_PATH = path.resolve("data/vectorstore.json");
@@ -76,11 +74,11 @@ async function parseDocument(buffer, filename) {
   const detected = await fileTypeFromBuffer(buffer).catch(() => null);
   const mime = detected?.mime || "";
 
-  // PDF handling v2
+  // PDF handling (disabled for Node.js 18 compatibility issues)
   if (mime === "application/pdf" || filename.endsWith(".pdf")) {
-    const parser = new PDFParse({ data: buffer }); // buffer input
-    const result = await parser.getText();
-    return result.text || "";
+    // TODO: Implement PDF text extraction in Node.js
+    console.warn("PDF text extraction not available - returning empty text");
+    return "";
   }
 
   // DOCX handling

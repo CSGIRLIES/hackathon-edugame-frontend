@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useUser } from '../contexts/UserContext.tsx';
 
 interface Question {
@@ -10,7 +9,6 @@ interface Question {
 }
 
 const QuizPage: React.FC = () => {
-  const { t } = useTranslation();
   const [topic, setTopic] = useState('');
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -21,6 +19,19 @@ const QuizPage: React.FC = () => {
 
   const { updateXP } = useUser();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Check for themed quiz data in location state
+  useEffect(() => {
+    if (location.state?.themedQuiz) {
+      const { themeData, questions: themedQuestions } = location.state;
+      setTopic(`${themeData.theme} - ${themeData.subTheme} (${themeData.title})`);
+      setQuestions(themedQuestions);
+      setStarted(true);
+      setScore(0);
+      setCurrentQuestion(0);
+    }
+  }, [location.state]);
 
   const handleStartQuiz = async () => {
     const trimmed = topic.trim();

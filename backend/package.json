@@ -6,10 +6,12 @@
     "start": "node index.js"
   },
   "dependencies": {
+    "canvas": "^3.2.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^4.21.2",
     "file-type": "^21.1.0",
+    "jsdom": "^27.2.0",
     "mammoth": "^1.11.0",
     "multer": "^1.4.5-lts.1",
     "node-fetch": "^3.3.2",
