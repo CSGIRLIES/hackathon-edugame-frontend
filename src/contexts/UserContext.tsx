@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { updateProfile } from '../utils/profileService.ts';
 
 export interface User {
   id: string;
@@ -36,7 +37,7 @@ export const useUser = () => {
 export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
 
-  const updateXP = (xp: number) => {
+  const updateXP = async (xp: number) => {
     if (user) {
       const newXP = user.xp + xp;
       let newLevel: 'baby' | 'adolescent' | 'adult';
@@ -47,7 +48,15 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       } else {
         newLevel = 'adult';
       }
-      setUser({ ...user, xp: newXP, level: newLevel });
+      
+      const updatedUser = { ...user, xp: newXP, level: newLevel };
+      setUser(updatedUser);
+      
+      // Persist XP and level to Supabase
+      await updateProfile(user.id, {
+        xp: newXP,
+        level: newLevel,
+      });
     }
   };
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../contexts/UserContext.tsx';
 import { supabase } from '../utils/supabaseClient.ts';
+import { fetchProfile } from '../utils/profileService.ts';
 
 const AuthPage: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -35,14 +36,23 @@ const AuthPage: React.FC = () => {
           throw new Error(signInError?.message || 'Connexion impossible.');
         }
 
+        // Fetch the user's companion profile from Supabase
+        const profile = await fetchProfile(data.user.id);
+
+        if (!profile) {
+          // No profile found - user signed up but didn't complete onboarding
+          navigate('/onboarding');
+          return;
+        }
+
         const appUser = {
-          id: data.user.id,
-          name: data.user.email?.split('@')[0] || 'Utilisateur',
-          animalType: 'cat',
-          animalName: 'Lumi',
-          animalColor: '#a855ff',
-          xp: 0,
-          level: 'baby' as const,
+          id: profile.user_id,
+          name: profile.name,
+          animalType: profile.animal_type,
+          animalName: profile.animal_name,
+          animalColor: profile.animal_color,
+          xp: profile.xp,
+          level: (profile.level === 'adolescent' || profile.level === 'teen' ? 'adolescent' : profile.level) as 'baby' | 'adolescent' | 'adult',
         };
 
         setUser(appUser);

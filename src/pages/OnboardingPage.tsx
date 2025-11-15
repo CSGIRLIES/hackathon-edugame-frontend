@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../contexts/UserContext.tsx';
+import { supabase } from '../utils/supabaseClient.ts';
+import { createProfile } from '../utils/profileService.ts';
 
 const OnboardingPage: React.FC = () => {
   const [step, setStep] = useState(0);
@@ -25,12 +27,25 @@ const OnboardingPage: React.FC = () => {
     { id: '#22c55e', label: 'Vert focus' },
   ];
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (step < 3) {
       setStep(step + 1);
     } else {
+      // Get the current authenticated user from Supabase
+      if (!supabase) {
+        alert('Supabase not configured. Profile cannot be saved.');
+        return;
+      }
+
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      if (!authUser) {
+        alert('No authenticated user found. Please log in again.');
+        navigate('/');
+        return;
+      }
+
       const newUser = {
-        id: Date.now().toString(),
+        id: authUser.id,
         name: userName,
         animalType,
         animalName,
@@ -38,6 +53,23 @@ const OnboardingPage: React.FC = () => {
         xp: 0,
         level: 'baby' as const,
       };
+
+      // Save profile to Supabase
+      const success = await createProfile({
+        user_id: authUser.id,
+        name: userName,
+        animal_type: animalType,
+        animal_name: animalName,
+        animal_color: animalColor,
+        xp: 0,
+        level: 'baby',
+      });
+
+      if (!success) {
+        alert('Failed to save profile. Please try again.');
+        return;
+      }
+
       setUser(newUser);
       navigate('/dashboard');
     }
