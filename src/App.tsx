@@ -5,12 +5,12 @@ import OnboardingPage from './pages/OnboardingPage.tsx';
 import DashboardPage from './pages/DashboardPage.tsx';
 import QuizPage from './pages/QuizPage.tsx';
 import LearningPage from './pages/LearningPage.tsx';
-import LanguageSelector from './components/LanguageSelector.tsx';
+import UserHeader from './components/UserHeader.tsx';
 
 function App() {
   return (
     <div className="App">
-      <LanguageSelector />
+      <UserHeader />
       <Routes>
         <Route path="/" element={<AuthPage />} />
         <Route path="/onboarding" element={<OnboardingPage />} />
