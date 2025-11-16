@@ -11,7 +11,10 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-app.use(cors({ origin: process.env.FRONTEND_ORIGIN || "http://localhost:3000" }));
+app.use(cors({
+  origin: ['http://localhost:3000', 'https://pawfriend.vercel.app'],
+  credentials: true
+}));
 app.use(express.json({ limit: "10mb" }));
 
 app.get("/api/health", (_req, res) => {
