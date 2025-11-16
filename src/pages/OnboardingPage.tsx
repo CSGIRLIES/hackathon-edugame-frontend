@@ -9,7 +9,7 @@ import Animal from '../components/Animal.tsx';
 const OnboardingPage: React.FC = () => {
   const { t } = useTranslation();
   const [step, setStep] = useState(0);
-  const [animalType, setAnimalType] = useState('cat'); // Default to cat for preview
+  const [animalType, setAnimalType] = useState('af'); // Default to fox for preview
   const [animalColor, setAnimalColor] = useState('#38bdf8'); // Default blue for preview
   const [animalName, setAnimalName] = useState('');
   const [userName, setUserName] = useState('');
@@ -19,10 +19,8 @@ const OnboardingPage: React.FC = () => {
   const { setUser } = useUser();
 
   const animalOptions = [
-    { id: 'cat', label: t('onboarding.animalCat'), hint: t('onboarding.animalCatHint') },
-    { id: 'dragon', label: t('onboarding.animalDragon'), hint: t('onboarding.animalDragonHint') },
-    { id: 'otter', label: t('onboarding.animalOtter'), hint: t('onboarding.animalOtterHint') },
-    { id: 'penguin', label: t('onboarding.animalPenguin'), hint: t('onboarding.animalPenguinHint') },
+    { id: 'af', label: t('onboarding.animalFox'), hint: t('onboarding.animalFoxHint') },
+    { id: 'chiot', label: t('onboarding.animalPuppy'), hint: t('onboarding.animalPuppyHint') },
   ];
 
   const colorOptions = [
