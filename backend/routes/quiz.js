@@ -6,13 +6,26 @@ const router = express.Router();
 
 const MISTRAL_CHAT_URL = "https://api.mistral.ai/v1/chat/completions";
 
-async function generateQuizFromText(topic, numQuestions = 3) {
+// Map i18next language codes to human-readable language names for the prompt
+const LANGUAGE_LABELS = {
+  en: "anglais",
+  fr: "français",
+  es: "espagnol",
+  de: "allemand",
+  ar: "arabe",
+};
+
+async function generateQuizFromText(topic, numQuestions = 3, language = "fr") {
   if (!process.env.MISTRAL_API_KEY) {
     throw new Error("MISTRAL_API_KEY is not set in environment");
   }
 
+  const langLabel = LANGUAGE_LABELS[language] || LANGUAGE_LABELS.fr;
+
   const prompt = `Tu es une IA qui crée des quiz pédagogiques pour des élèves.
 Le niveau (primaire, collège, lycée, université) et le sujet sont décrits dans ce texte : "${topic}".
+
+LANGUE DE SORTIE : toutes les questions, options, explications et textes doivent être rédigés en ${langLabel}.
 
 Ta tâche : générer ${numQuestions} questions à choix multiples pour vérifier que l'élève a bien compris.
 
@@ -50,7 +63,11 @@ Répond UNIQUEMENT avec du JSON valide, sans explication autour, avec ce format 
       "wolframInput": "requête Wolfram Alpha pertinente ou null"
     }
   ]
-}`;
+}
+
+IMPORTANT : "options" doit être un tableau JSON avec EXACTEMENT 4 éléments séparés, PAS une seule chaîne de caractères avec des virgules.
+Exemple CORRECT : "options": ["Réponse 1", "Réponse 2", "Réponse 3", "Réponse 4"]
+Exemple INCORRECT : "options": ["Réponse 1, Réponse 2, Réponse 3, Réponse 4"]`;
 
   const res = await fetch(MISTRAL_CHAT_URL, {
     method: "POST",
@@ -85,28 +102,51 @@ Répond UNIQUEMENT avec du JSON valide, sans explication autour, avec ce format 
   }
 
   // Normalise shape to { question, options, correct, wolframInput? }
-  const questions = parsed.questions.map((q) => ({
-    question: q.question,
-    options: q.options,
-    correct: typeof q.correctIndex === "number" ? q.correctIndex : 0,
-    wolframInput:
-      typeof q.wolframInput === "string" && q.wolframInput.trim().length > 0
-        ? q.wolframInput.trim()
-        : null,
-  }));
+  const questions = parsed.questions.map((q) => {
+    let options = q.options;
+
+    // Fix common LLM mistake: options as single comma-separated string instead of array
+    if (Array.isArray(options) && options.length === 1 && typeof options[0] === 'string') {
+      const singleString = options[0];
+      // If it contains commas, likely the LLM put all options in one string
+      if (singleString.includes(',')) {
+        options = singleString.split(',').map(opt => opt.trim());
+      }
+    }
+
+    // Ensure we have exactly 4 options
+    if (!Array.isArray(options) || options.length !== 4) {
+      console.warn('[QuizRoute] Question has invalid options array:', q);
+      // Fallback to placeholder options if format is completely wrong
+      options = ['Option A', 'Option B', 'Option C', 'Option D'];
+    }
+
+    return {
+      question: q.question,
+      options,
+      correct: typeof q.correctIndex === "number" ? q.correctIndex : 0,
+      wolframInput:
+        typeof q.wolframInput === "string" && q.wolframInput.trim().length > 0
+          ? q.wolframInput.trim()
+          : null,
+    };
+  });
 
   return { questions };
 }
 
 router.post("/from-text", async (req, res) => {
   try {
-    const { topic, numQuestions } = req.body || {};
+    const { topic, numQuestions, language } = req.body || {};
     if (!topic || typeof topic !== "string") {
       return res.status(400).json({ error: "Missing or invalid 'topic'" });
     }
 
     const count = typeof numQuestions === "number" ? numQuestions : 3;
-    const quiz = await generateQuizFromText(topic, count);
+    const lang = typeof language === "string" && language.trim()
+      ? language.trim().slice(0, 2)
+      : "fr";
+    const quiz = await generateQuizFromText(topic, count, lang);
     res.json({ status: "success", ...quiz });
   } catch (e) {
     console.error("[QuizRoute] Error generating quiz:", e);
@@ -128,7 +168,7 @@ router.get("/themes", (req, res) => {
 // Generate quiz from theme
 router.post("/from-theme", async (req, res) => {
   try {
-    const { themeId, numQuestions } = req.body || {};
+    const { themeId, numQuestions, language } = req.body || {};
     if (!themeId || typeof themeId !== "string") {
       return res.status(400).json({ error: "Missing or invalid 'themeId'" });
     }
@@ -140,7 +180,10 @@ router.post("/from-theme", async (req, res) => {
 
     const count = typeof numQuestions === "number" ? numQuestions : 3;
     const topic = themeData.prompt;
-    const quiz = await generateQuizFromText(topic, count);
+    const lang = typeof language === "string" && language.trim()
+      ? language.trim().slice(0, 2)
+      : "fr";
+    const quiz = await generateQuizFromText(topic, count, lang);
     res.json({
       status: "success",
       themeId,

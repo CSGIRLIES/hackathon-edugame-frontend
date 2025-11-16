@@ -92,7 +92,7 @@ const buildWolframInput = (questionText: string): string => {
 };
 
 const QuizPage: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const location = useLocation();
   const [topic, setTopic] = useState('');
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -137,7 +137,11 @@ const QuizPage: React.FC = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ topic: trimmed, numQuestions: 3 }),
+        body: JSON.stringify({
+          topic: trimmed,
+          numQuestions: 3,
+          language: i18n.language,
+        }),
       });
 
       if (!res.ok) {

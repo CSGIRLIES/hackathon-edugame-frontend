@@ -17,7 +17,7 @@ interface ThemeData {
 }
 
 const QuizThemesPage: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [themeData, setThemeData] = useState<ThemeData | null>(null);
   const [selectedTheme, setSelectedTheme] = useState<string>('Mathématiques');
@@ -102,7 +102,11 @@ const QuizThemesPage: React.FC = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ themeId, numQuestions: 3 }),
+        body: JSON.stringify({
+          themeId,
+          numQuestions: 3,
+          language: i18n.language,
+        }),
       });
 
       if (!res.ok) {
