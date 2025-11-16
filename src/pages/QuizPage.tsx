@@ -335,8 +335,8 @@ const QuizPage: React.FC = () => {
               disabled={wolframLoading}
             >
               {wolframLoading
-                ? 'Consultation Wolfram...'
-                : 'Voir l’explication par Wolfram'}
+                ? t('quiz.wolframLoading')
+                : t('quiz.wolframButton')}
             </button>
             {wolframError && (
               <p
@@ -352,9 +352,9 @@ const QuizPage: React.FC = () => {
         {wolframHistory.length > 0 && (
           <section className="card" style={{ marginTop: '1.5rem' }}>
             <div className="card-header">
-              <h2 className="card-title">Historique des explications Wolfram</h2>
+              <h2 className="card-title">{t('quiz.wolframHistoryTitle')}</h2>
               <p className="card-subtitle">
-                Résultats et explications renvoyés par Wolfram Alpha pour tes questions.
+                {t('quiz.wolframHistorySubtitle')}
               </p>
             </div>
             <div className="wolfram-history">
@@ -365,11 +365,11 @@ const QuizPage: React.FC = () => {
                   style={{ marginBottom: '1rem' }}
                 >
                   <p className="wolfram-question">
-                    <strong>Question :</strong> {entry.question}
+                    <strong>{t('quiz.wolframQuestionLabel')}</strong> {entry.question}
                   </p>
                   <p className="wolfram-result">
-                    <strong>Résultat Wolfram :</strong>{' '}
-                    {entry.primaryResult || 'Pas de résultat clair renvoyé.'}
+                    <strong>{t('quiz.wolframResultLabel')}</strong>{' '}
+                    {entry.primaryResult || t('quiz.wolframNoResult')}
                   </p>
                   {entry.explanations.length > 0 && (
                     <ul className="wolfram-explanations">
@@ -390,10 +390,10 @@ const QuizPage: React.FC = () => {
       <Modal
         isOpen={showCompletionModal}
         onClose={() => setShowCompletionModal(false)}
-        title="✨ Félicitations !"
-        message={`Quiz terminé ! Tu as gagné ${finalScore} XP pour ton compagnon. Continue comme ça ! 🎉`}
+        title={t('quiz.quizCompletionTitle')}
+        message={t('quiz.quizCompletionMessage', { score: finalScore })}
         icon="✨"
-        buttonText="Retour au tableau de bord"
+        buttonText={t('quiz.quizCompletionButton')}
         buttonAction={() => {
           setShowCompletionModal(false);
           navigate('/dashboard');

@@ -123,7 +123,17 @@
     "resultsTitle": "Résultats du quiz",
     "score": "{{correct}} / {{total}} correctes",
     "xpEarned": "XP gagnés :",
-    "companionMessage": "{{name}} est fier de toi ! Continue à apprendre ! ✨"
+    "companionMessage": "{{name}} est fier de toi ! Continue à apprendre ! ✨",
+    "wolframLoading": "Consultation de Wolfram...",
+    "wolframButton": "Voir l'explication de Wolfram",
+    "wolframHistoryTitle": "Historique des explications Wolfram",
+    "wolframHistorySubtitle": "Résultats et explications retournés par Wolfram Alpha pour tes questions.",
+    "wolframQuestionLabel": "Question :",
+    "wolframResultLabel": "Résultat Wolfram :",
+    "wolframNoResult": "Aucun résultat clair retourné.",
+    "quizCompletionTitle": "✨ Félicitations !",
+    "quizCompletionMessage": "Quiz terminé ! Tu as gagné {{score}} XP pour ton compagnon. Continue comme ça ! 🎉",
+    "quizCompletionButton": "Retour au tableau de bord"
   },
   "animal": {
     "contextDashboard": [
