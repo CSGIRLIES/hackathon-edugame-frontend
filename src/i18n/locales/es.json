@@ -73,7 +73,12 @@
     "tip": "Consejo: una sesión pomodoro + un quiz al final = mucho XP para {{name}} ✨",
     "levelBaby": "Bebé",
     "levelAdolescent": "Adolescente",
-    "levelAdult": "Adulto"
+    "levelAdult": "Adulto",
+    "adultReached": "¡Nivel adulto alcanzado - tu compañero ha alcanzado la edad máxima.",
+    "foodNotFound": "Elemento de comida no encontrado.",
+    "notEnoughXP": "No tienes suficiente XP! (Requerido: {{cost}} XP)",
+    "foodEatenSuccess": "¡Delicioso! {{name}} comió la comida.",
+    "feedCompanion": "Alimentar a tu compañero"
   },
   "learning": {
     "title": "Sesión de Aprendizaje",
@@ -409,12 +414,29 @@
     "noResult": "No se devolvió ningún resultado claro.",
     "detailedExplanations": "Explicaciones detalladas"
   },
-  "errors": {
-    "generic": "Ocurrió un error. Por favor, inténtalo de nuevo.",
-    "network": "Error de red. Por favor, verifica tu conexión.",
-    "unauthorized": "Debes iniciar sesión para acceder a esta página.",
-    "notFound": "Página no encontrada.",
-    "formValidation": "Por favor, completa todos los campos obligatorios.",
-    "serverError": "Error del servidor. Por favor, inténtalo más tarde."
-  }
+    "landing": {
+      "heroTitle": "Adopta tu compañero de estudio acogedor",
+      "heroSubtitle": "Un zorro mágico o un cachorro lindo que crece con tus XP y rachas, convirtiendo las revisiones en una aventura kawaii.",
+      "getStarted": "Empezar",
+      "learnMore": "Aprender Más →",
+      "whyChoose": "¿Por qué elegir Pawfriend?",
+      "feature1Title": "Aprendizaje Personalizado",
+      "feature1Desc": "Exámenes y guías de estudio impulsados por IA adaptados solo para ti.",
+      "feature2Title": "Compañeros Adorables",
+      "feature2Desc": "Mira a tu animal virtual crecer y evolucionar con tu progreso.",
+      "feature3Title": "Experiencia Gamificada",
+      "feature3Desc": "Gana XP, mantén rachas y recompensas mientras haces que el aprendizaje sea divertido.",
+      "ctaTitle": "¿Listo para Empezar Tu Aventura de Aprendizaje?",
+      "ctaDesc": "Únete a miles de estudiantes que han hecho el estudio divertido y gratificante.",
+      "joinNow": "¡Únete Ahora - Es Gratis! 🎉",
+      "footer": "© 2024 Pawfriend - Hacer el Aprendizaje Mágico"
+    },
+    "errors": {
+      "generic": "Ocurrió un error. Por favor, inténtalo de nuevo.",
+      "network": "Error de red. Por favor, verifica tu conexión.",
+      "unauthorized": "Debes iniciar sesión para acceder a esta página.",
+      "notFound": "Página no encontrada.",
+      "formValidation": "Por favor, completa todos los campos obligatorios.",
+      "serverError": "Error del servidor. Por favor, inténtalo más tarde."
+    }
 }

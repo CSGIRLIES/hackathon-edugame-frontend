@@ -73,7 +73,12 @@
     "tip": "Tipp: eine Pomodoro-Sitzung + ein Quiz am Ende = viele XP für {{name}} ✨",
     "levelBaby": "Baby",
     "levelAdolescent": "Jugendlicher",
-    "levelAdult": "Erwachsener"
+    "levelAdult": "Erwachsener",
+    "adultReached": "Erwachsenenlevel erreicht – dein Begleiter hat das maximale Alter erreicht.",
+    "foodNotFound": "Essensartikel nicht gefunden.",
+    "notEnoughXP": "Du hast nicht genug XP! (Erforderlich: {{cost}} XP)",
+    "foodEatenSuccess": "Lecker! {{name}} hat das Essen gegessen.",
+    "feedCompanion": "Deinen Begleiter füttern"
   },
   "learning": {
     "title": "Lernsitzung",
@@ -409,12 +414,29 @@
     "noResult": "Kein klares Ergebnis zurückgegeben.",
     "detailedExplanations": "Detaillierte Erklärungen"
   },
-  "errors": {
-    "generic": "Ein Fehler ist aufgetreten. Bitte versuche es erneut.",
-    "network": "Netzwerkfehler. Bitte überprüfe deine Verbindung.",
-    "unauthorized": "Du musst angemeldet sein, um auf diese Seite zuzugreifen.",
-    "notFound": "Seite nicht gefunden.",
-    "formValidation": "Bitte fülle alle Pflichtfelder aus.",
-    "serverError": "Serverfehler. Bitte versuche es später erneut."
-  }
+    "landing": {
+      "heroTitle": "Adoptiere deinen gemütlichen Lern-Begleiter",
+      "heroSubtitle": "Ein magischer Fuchs oder ein süßer Welpe, der mit deinen XP und Serien wächst, und Revisionen in ein kawaii-Abenteuer verwandelt.",
+      "getStarted": "Loslegen",
+      "learnMore": "Mehr Erfahren →",
+      "whyChoose": "Warum Pawfriend wählen?",
+      "feature1Title": "Personalisierte Lernerfahrung",
+      "feature1Desc": "KI-gestützte Quizze und Lernführer, die extra für dich angepasst sind.",
+      "feature2Title": "Niedliche Begleiter",
+      "feature2Desc": "Schaue zu, wie dein virtuelles Tier mit deinem Fortschritt wächst und sich entwickelt.",
+      "feature3Title": "Gamifizierte Erfahrung",
+      "feature3Desc": "Verdiene XP, halte Serien und Belohnungen, während du Lernen spaßig machst.",
+      "ctaTitle": "Bereit, dein Lernabenteuer zu starten?",
+      "ctaDesc": "Trete Tausenden von Studenten bei, die Lernen spaßig und bereichernd gemacht haben.",
+      "joinNow": "Jetzt beitreten - Kostenlos! 🎉",
+      "footer": "© 2024 Pawfriend - Lernen Magisch Machen"
+    },
+    "errors": {
+      "generic": "Ein Fehler ist aufgetreten. Bitte versuche es erneut.",
+      "network": "Netzwerkfehler. Bitte überprüfe deine Verbindung.",
+      "unauthorized": "Du musst angemeldet sein, um auf diese Seite zuzugreifen.",
+      "notFound": "Seite nicht gefunden.",
+      "formValidation": "Bitte fülle alle Pflichtfelder aus.",
+      "serverError": "Serverfehler. Bitte versuche es später erneut."
+    }
 }

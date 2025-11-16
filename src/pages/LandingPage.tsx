@@ -4,37 +4,68 @@ import { useTranslation } from 'react-i18next';
 import Animal from '../components/Animal.tsx';
 
 const LandingPage: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
 
   const handleGetStarted = () => {
     navigate('/auth');
   };
 
-  const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode);
-    document.body.classList.toggle('dark-mode');
+  const changeLanguage = (lang: string) => {
+    i18n.changeLanguage(lang);
+    setIsLanguageDropdownOpen(false);
   };
 
+  const languages = [
+    { code: 'fr', name: '🇫🇷 Français', flag: '🇫🇷' },
+    { code: 'en', name: '🇬🇧 English', flag: '🇬🇧' },
+    { code: 'es', name: '🇪🇸 Español', flag: '🇪🇸' },
+    { code: 'de', name: '🇩🇪 Deutsch', flag: '🇩🇪' },
+    { code: 'ar', name: '🇸🇦 العربية', flag: '🇸🇦' },
+  ];
+
+  const currentLanguage = languages.find(lang => lang.code === i18n.language) || languages[0];
+
   return (
-    <div className={`landing-page ${isDarkMode ? 'dark-mode' : ''}`}>
+    <div className="landing-page">
       {/* Header */}
       <div className="landing-header">
         <img
           className="landing-logo"
-          src={`/pawfriend_${isDarkMode ? 'night' : 'day'}.png`}
+          src="/pawfriend_day.png"
           alt="Pawfriend Logo"
           style={{ height: '2.5rem', width: 'auto' }}
         />
-        <button
-          type="button"
-          onClick={toggleDarkMode}
-          className="landing-btn landing-btn-secondary"
-          aria-label="Toggle dark mode"
-        >
-          {isDarkMode ? '☀️' : '🌙'}
-        </button>
+
+        {/* Language Dropdown */}
+        <div className="language-dropdown">
+          <button
+            type="button"
+            onClick={() => setIsLanguageDropdownOpen(!isLanguageDropdownOpen)}
+            className="language-dropdown-button"
+            aria-label="Select language"
+          >
+            {currentLanguage.flag} {currentLanguage.code.toUpperCase()}
+          </button>
+
+          {isLanguageDropdownOpen && (
+            <div className="language-dropdown-menu">
+              {languages.map((lang) => (
+                <button
+                  key={lang.code}
+                  type="button"
+                  onClick={() => changeLanguage(lang.code)}
+                  className={`language-dropdown-item ${
+                    lang.code === i18n.language ? 'active' : ''
+                  }`}
+                >
+                  {lang.name}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Main Content */}

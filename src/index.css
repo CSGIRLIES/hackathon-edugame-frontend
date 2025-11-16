@@ -1246,6 +1246,78 @@ body.dark-mode {
   color: #ffffff;
 }
 
+/* LANGUAGE DROPDOWN */
+.language-dropdown {
+  position: relative;
+}
+
+.language-dropdown-button {
+  background: #ffffff;
+  border: 2px solid var(--lp-color-primary);
+  color: var(--lp-color-text);
+  padding: 0.7rem 1rem;
+  border-radius: var(--lp-radius-pill);
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: var(--lp-shadow-soft);
+  transition: all 0.2s ease;
+  min-width: 120px;
+  justify-content: center;
+}
+
+.language-dropdown-button:hover {
+  background-color: var(--lp-color-primary);
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(163, 201, 243, 0.4);
+}
+
+.language-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  background: #ffffff;
+  border-radius: var(--lp-radius-large);
+  padding: 0.5rem;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  min-width: 180px;
+  z-index: 1000;
+  opacity: 0;
+  transform: translateY(-10px);
+  animation: dropdown-appear 0.2s ease forwards;
+  border: 2px solid var(--lp-color-primary);
+}
+
+.language-dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: none;
+  background: none;
+  color: var(--lp-color-text);
+  font-size: 0.9rem;
+  cursor: pointer;
+  border-radius: var(--lp-radius-large);
+  transition: all 0.2s ease;
+  text-align: center;
+  font-weight: 500;
+}
+
+.language-dropdown-item:hover {
+  background-color: var(--lp-color-primary);
+  color: #ffffff;
+}
+
+.language-dropdown-item.active {
+  background-color: var(--lp-color-primary);
+  color: #ffffff;
+  font-weight: 600;
+}
+
 /* LEARNING ANALYTICS NOTEBOOK STYLE */
 .learning-analytics-card {
   background-color: var(--card-bg) !important;

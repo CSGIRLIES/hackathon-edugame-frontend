@@ -73,7 +73,12 @@
     "tip": "Tip: a pomodoro session + a quiz at the end = lots of XP for {{name}} ✨",
     "levelBaby": "Baby",
     "levelAdolescent": "Adolescent",
-    "levelAdult": "Adult"
+    "levelAdult": "Adult",
+    "adultReached": "Adult level reached – your companion has reached maximum age.",
+    "foodNotFound": "Food item not found.",
+    "notEnoughXP": "You don't have enough XP! (Required: {{cost}} XP)",
+    "foodEatenSuccess": "Delicious! {{name}} ate the food.",
+    "feedCompanion": "Feed your companion"
   },
   "learning": {
     "title": "Learning Session",
@@ -413,12 +418,29 @@
     "detailedExplanations": "Detailed explanations",
     "backToDashboard": "Back to Dashboard"
   },
-  "errors": {
-    "generic": "An error occurred. Please try again.",
-    "network": "Network error. Please check your connection.",
-    "unauthorized": "You must be logged in to access this page.",
-    "notFound": "Page not found.",
-    "formValidation": "Please fill in all required fields.",
-    "serverError": "Server error. Please try again later."
-  }
+    "landing": {
+      "heroTitle": "Adopt your cozy study companion",
+      "heroSubtitle": "A magical fox or cute puppy that grows with your XP and streaks, turning revisions into a kawaii adventure.",
+      "getStarted": "Get Started",
+      "learnMore": "Learn More →",
+      "whyChoose": "Why Choose Pawfriend?",
+      "feature1Title": "Personalized Learning",
+      "feature1Desc": "AI-powered quizzes and study guides adapted just for you.",
+      "feature2Title": "Adorable Companions",
+      "feature2Desc": "Watch your virtual animal grow and evolve with your progress.",
+      "feature3Title": "Gamified Experience",
+      "feature3Desc": "Earn XP, maintain streaks and rewards while making learning fun.",
+      "ctaTitle": "Ready to Start Your Learning Adventure?",
+      "ctaDesc": "Join thousands of students who have made studying fun and gratifying.",
+      "joinNow": "Join Now - It's Free! 🎉",
+      "footer": "© 2024 Pawfriend - Making Learning Magical"
+    },
+    "errors": {
+      "generic": "An error occurred. Please try again.",
+      "network": "Network error. Please check your connection.",
+      "unauthorized": "You must be logged in to access this page.",
+      "notFound": "Page not found.",
+      "formValidation": "Please fill in all required fields.",
+      "serverError": "Server error. Please try again later."
+    }
 }

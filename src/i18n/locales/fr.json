@@ -73,7 +73,12 @@
     "tip": "Astuce : une session pomodoro + un quiz à la fin = beaucoup d'XP pour {{name}} ✨",
     "levelBaby": "Bébé",
     "levelAdolescent": "Adolescent",
-    "levelAdult": "Adulte"
+    "levelAdult": "Adulte",
+    "adultReached": "Niveau adulte atteint – votre compagnon a atteint son âge maximal.",
+    "foodNotFound": "Nourriture non trouvée.",
+    "notEnoughXP": "Vous n'avez pas assez d'XP ! (Requis: {{cost}} XP)",
+    "foodEatenSuccess": "Délicieux ! {{name}} a mangé la nourriture.",
+    "feedCompanion": "Nourrir votre compagnon"
   },
   "learning": {
     "title": "Session d'apprentissage",

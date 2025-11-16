@@ -11,6 +11,10 @@ interface AnimalProps {
   onFoodClick?: (food: string, cost: number) => void;
 }
 
+interface DashboardProps {
+  t: (key: string) => string;
+}
+
 type AnimationType = 'idle' | 'walk' | 'run' | 'sit' | 'happy';
 
 const Animal: React.FC<AnimalProps> = ({ type, color, level, xp = 0, context = 'dashboard', onFoodClick }) => {
@@ -276,7 +280,7 @@ const Animal: React.FC<AnimalProps> = ({ type, color, level, xp = 0, context = '
             }}
             onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)'}
             onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-            title="Nourrir votre compagnon"
+            title={t('dashboard.feedCompanion')}
           >
             {foodEmoji}
           </button>

@@ -59,26 +59,25 @@ const DashboardPage: React.FC = () => {
     const foodItem = getFoodItem(user.animalType, foodId.split('-')[1]); // Extract food key from id
 
     if (!foodItem) {
-      setFoodFeedback('Nourriture non trouvée.');
+      setFoodFeedback(t('dashboard.foodNotFound'));
       setTimeout(() => setFoodFeedback(null), 3000);
       return;
     }
 
-    // Try to subtract the cost
+    // Try to subtract the cost (no XP reward anymore)
     const costSubtracted = await subtractXP(cost);
     if (!costSubtracted) {
-      setFoodFeedback(`Vous n'avez pas assez d'XP ! (Requis: ${cost} XP)`);
+      setFoodFeedback(t('dashboard.notEnoughXP', { cost }));
       setTimeout(() => setFoodFeedback(null), 3000);
       return;
     }
 
     try {
-      // Add the XP reward
-      await updateXP(foodItem.xpReward);
-      setFoodFeedback(`Délicieux ! ${user.animalName} a gagné ${foodItem.xpReward} XP supplémentaires !`);
+      // Food eaten successfully - no XP reward
+      setFoodFeedback(t('dashboard.foodEatenSuccess', { name: user.animalName }));
       setTimeout(() => setFoodFeedback(null), 3000);
     } catch (error) {
-      setFoodFeedback('Erreur lors de l\'ajout de la récompense XP.');
+      setFoodFeedback(t('errors.generic'));
       setTimeout(() => setFoodFeedback(null), 3000);
     }
   };
@@ -155,7 +154,7 @@ const DashboardPage: React.FC = () => {
             )}
             {user.level === 'adult' && (
               <p className="helper-text" style={{ marginTop: '0.35rem' }}>
-                Niveau adulte atteint – votre compagnon a atteint son âge maximal.
+                {t('dashboard.adultReached')}
               </p>
             )}
           </section>
