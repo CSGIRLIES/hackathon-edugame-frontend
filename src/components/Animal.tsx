@@ -355,7 +355,6 @@ const Animal: React.FC<AnimalProps> = ({ type, color, level, xp = 0, context = '
           }}
         />
         <div className="animal-message">
-          <div className="animal-message-label">Message de ton compagnon</div>
           <div className="animal-message-text">
             <div>{currentMessage}</div>
           </div>
