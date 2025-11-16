@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { updateProfile } from '../utils/profileService.ts';
 
 export interface User {
@@ -25,6 +25,7 @@ export interface LearningSession {
 
 interface UserContextType {
   user: User | null;
+  isLoading: boolean;
   setUser: (user: User | null) => void;
   updateXP: (xp: number) => void;
   subtractXP: (xp: number) => Promise<boolean>;
@@ -45,6 +46,36 @@ export const useUser = () => {
 
 export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Load user from localStorage on initial mount (simple session persistence)
+  useEffect(() => {
+    const initializeUser = () => {
+      try {
+        const stored = localStorage.getItem('csGirliesUser');
+        if (stored) {
+          const parsed: User = JSON.parse(stored);
+          setUser(parsed);
+        }
+      } catch (error) {
+        console.error('Error restoring user from localStorage', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    initializeUser();
+  }, []);
+
+  // Persist user to localStorage whenever it changes (after initial load)
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem('csGirliesUser', JSON.stringify(user));
+    } else if (!isLoading) {
+      // Only clear storage when user is explicitly cleared (e.g. logout), not during initial load
+      localStorage.removeItem('csGirliesUser');
+    }
+  }, [user, isLoading]);
 
   const updateXP = async (xp: number) => {
     if (user) {
@@ -192,6 +223,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     <UserContext.Provider
       value={{
         user,
+        isLoading,
         setUser,
         updateXP,
         subtractXP,

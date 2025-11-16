@@ -8,7 +8,7 @@ import { getFoodItem } from '../data/foodItems.js';
 
 const DashboardPage: React.FC = () => {
   const { t } = useTranslation();
-  const { user, checkStreakExpiry, updateXP, subtractXP } = useUser();
+  const { user, isLoading, checkStreakExpiry, updateXP, subtractXP } = useUser();
   const navigate = useNavigate();
   const [foodFeedback, setFoodFeedback] = useState<string | null>(null);
 
@@ -19,8 +19,39 @@ const DashboardPage: React.FC = () => {
     }
   }, [user?.id]); // Only run when user id changes (on mount/user change)
 
+  // Redirect to home if no user is found after component is mounted
+  useEffect(() => {
+    if (!isLoading && !user) {
+      navigate('/');
+    }
+  }, [user, isLoading, navigate]);
+
+  // Show loading until we know user state
+  if (isLoading) {
+    return (
+      <div className="page">
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '50vh'
+        }}>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{
+              fontSize: '2rem',
+              marginBottom: '1rem'
+            }}>
+              ✨
+            </div>
+            <p style={{ color: 'var(--text-muted)' }}>Loading your learning companion...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't render dashboard content until we confirm user exists
   if (!user) {
-    navigate('/');
     return null;
   }
 
