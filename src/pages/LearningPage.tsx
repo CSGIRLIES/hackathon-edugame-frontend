@@ -346,18 +346,41 @@ const LearningPage: React.FC = () => {
             <p className="helper-text">
               {t('learning.planSubtitle')}
             </p>
-            <div className="input-group" style={{ maxWidth: 220, marginTop: '0.5rem' }}>
+            <div style={{ marginTop: '0.5rem' }}>
               <label className="input-label" htmlFor="availableTime">
                 {t('learning.planTimeLabel')}
               </label>
-              <input
-                id="availableTime"
-                className="input"
-                type="number"
-                min={10}
-                value={availableTime}
-                onChange={(e) => setAvailableTime(parseInt(e.target.value || '0', 10))}
-              />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.25rem' }}>
+                <button
+                  type="button"
+                  className="btn btn-outline"
+                  style={{ padding: '0.5rem 0.75rem', fontSize: '1.25rem', lineHeight: 1 }}
+                  onClick={() => setAvailableTime(prev => Math.max(30, prev - 30))}
+                  disabled={availableTime <= 10}
+                >
+                  -
+                </button>
+                <div style={{
+                  padding: '0.5rem 1rem',
+                  backgroundColor: 'var(--bg-secondary)',
+                  border: '1px solid var(--border-color)',
+                  borderRadius: '0.375rem',
+                  fontSize: '0.9rem',
+                  fontWeight: '500',
+                  minWidth: '80px',
+                  textAlign: 'center'
+                }}>
+                  {availableTime} min
+                </div>
+                <button
+                  type="button"
+                  className="btn btn-outline"
+                  style={{ padding: '0.5rem 0.75rem', fontSize: '1.25rem', lineHeight: 1 }}
+                  onClick={() => setAvailableTime(prev => prev + 30)}
+                >
+                  +
+                </button>
+              </div>
             </div>
             <div className="btn-row">
               <button
