@@ -10,11 +10,11 @@ const StreaksWidget: React.FC = () => {
 
   const getStreakEmoji = (streak: number) => {
     if (streak === 0) return '💧'; // Droplet for restart
-    if (streak < 3) return '🔥'; // Small flame
-    if (streak < 7) return '🔥🔥'; // Two flames
-    if (streak < 14) return '🔥🔥🔥'; // Three flames
-    if (streak < 30) return '🌟'; // Star for epic streaks
-    return '👑'; // Crown for legendary streaks
+    if (streak < 3) return '💦'; // Sweat drops for small hydrated streaks
+    if (streak < 7) return '💦💦'; // Two sweat drops
+    if (streak < 14) return '🌊'; // Wave for well-hydrated streaks
+    if (streak < 30) return '🔵'; // Blue heart for epic hydrated streaks
+    return '💙'; // Blue heart for legendary hydrated streaks
   };
 
   const getStreakMessage = (streak: number) => {
@@ -32,7 +32,7 @@ const StreaksWidget: React.FC = () => {
     <section className="card">
       <div className="card-header">
         <h2 className="card-title">
-          🔥 {t('streaks.title')}
+          💧 {t('streaks.title')}
           {isPersonalRecord && <span className="streak-record">🏆</span>}
         </h2>
         <p className="card-subtitle">
@@ -77,4 +77,3 @@ const StreaksWidget: React.FC = () => {
 };
 
 export default StreaksWidget;
-

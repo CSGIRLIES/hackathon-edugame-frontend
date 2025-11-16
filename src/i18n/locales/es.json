@@ -191,6 +191,19 @@
       "¡Cada respuesta te enseña algo!"
     ]
   },
+  "streaks": {
+    "title": "Rachas de Hidratación",
+    "subtitle": "¡Mantén a tu compañero hidratado aprendiendo cada día!",
+    "days": "días",
+    "restart": "¡Tu compañero necesita agua hoy!",
+    "oneDay": "¡1 día! ¡Tu compañero está refrescado!",
+    "keepGoing": "¡Mantén a tu compañero hidratado!",
+    "onFire": "¡Tu compañero se mantiene hidratado! 💧",
+    "epic": "¡Hidratación épica! ¡Tu compañero prospera! 🌟",
+    "legendary": "¡Cuidador legendario! ¡Tu compañero te estará eternamente agradecido! 👑",
+    "personalBest": "Récord personal",
+    "getStarted": "¡Empieza a aprender para hidratar a tu compañero hoy!"
+  },
   "errors": {
     "generic": "Ocurrió un error. Por favor, inténtalo de nuevo.",
     "network": "Error de red. Por favor, verifica tu conexión.",

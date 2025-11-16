@@ -155,6 +155,19 @@
       "Jede Antwort lehrt dich etwas!"
     ]
   },
+  "streaks": {
+    "title": "Hydratationsserien",
+    "subtitle": "Halte deinen Begleiter hydratisiert, indem du jeden Tag lernst!",
+    "days": "Tage",
+    "restart": "Dein Begleiter braucht heute Wasser!",
+    "oneDay": "1 Tag! Dein Begleiter ist erfrischt!",
+    "keepGoing": "Halte deinen Begleiter hydratisiert!",
+    "onFire": "Dein Begleiter bleibt hydratisiert! 💧",
+    "epic": "Epische Hydratation! Dein Begleiter gedeiht! 🌟",
+    "legendary": "Legendärer Pfleger! Dein Begleiter ist dir ewig dankbar! 👑",
+    "personalBest": "Persönlicher Rekord",
+    "getStarted": "Beginne zu lernen, um deinen Begleiter heute zu hydratisieren!"
+  },
   "errors": {
     "generic": "Ein Fehler ist aufgetreten. Bitte versuche es erneut.",
     "network": "Netzwerkfehler. Bitte überprüfe deine Verbindung.",

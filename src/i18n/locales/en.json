@@ -158,17 +158,17 @@
     ]
   },
   "streaks": {
-    "title": "Streaks",
-    "subtitle": "Come back every day to increase your streak!",
+    "title": "Hydration Streaks",
+    "subtitle": "Keep your companion hydrated by learning every day!",
     "days": "days",
-    "restart": "Restart your streak today!",
-    "oneDay": "1 day! That's a good start!",
-    "keepGoing": "Keep it up!",
-    "onFire": "You're on fire! 🔥",
-    "epic": "Epic streak! Keep going! 🌟",
-    "legendary": "You're a legend! 👑",
+    "restart": "Your companion needs water today!",
+    "oneDay": "1 day! Your companion is refreshed!",
+    "keepGoing": "Keep your companion hydrated!",
+    "onFire": "Your companion is staying hydrated! 💧",
+    "epic": "Epic hydration! Your companion is thriving! 🌟",
+    "legendary": "Legendary caregiver! Your companion is forever grateful! 👑",
     "personalBest": "Personal best",
-    "getStarted": "Start a new streak by learning today!"
+    "getStarted": "Start learning to hydrate your companion today!"
   },
   "errors": {
     "generic": "An error occurred. Please try again.",

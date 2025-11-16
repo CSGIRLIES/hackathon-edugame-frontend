@@ -158,17 +158,17 @@
     ]
   },
   "streaks": {
-    "title": "Séries",
-    "subtitle": "Reviens chaque jour pour augmenter ta série !",
+    "title": "Séries d'Hydratation",
+    "subtitle": "Garde ton compagnon hydraté en apprenant chaque jour !",
     "days": "jours",
-    "restart": "Recommence ta série aujourd'hui !",
-    "oneDay": "1 jour ! C'est un bon début !",
-    "keepGoing": "Continue comme ça !",
-    "onFire": "Tu es en feu ! 🔥",
-    "epic": "Série épique ! Continue ! 🌟",
-    "legendary": "Tu es une légende ! 👑",
+    "restart": "Ton compagnon a besoin d'eau aujourd'hui !",
+    "oneDay": "1 jour ! Ton compagnon est rafraîchi !",
+    "keepGoing": "Garde ton compagnon hydraté !",
+    "onFire": "Ton compagnon reste hydraté ! 💧",
+    "epic": "Hydratation épique ! Ton compagnon prospère ! 🌟",
+    "legendary": "Soigneur légendaire ! Ton compagnon te sera éternellement reconnaissant ! 👑",
     "personalBest": "Record personnel",
-    "getStarted": "Commence une nouvelle série en apprenant aujourd'hui !"
+    "getStarted": "Commence à apprendre pour hydrater ton compagnon aujourd'hui !"
   },
   "errors": {
     "generic": "Une erreur s'est produite. Veuillez réessayer.",
