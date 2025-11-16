@@ -167,7 +167,10 @@
       "recommendation3": "Consider increasing your daily study goal to 35 minutes",
       "recommendation4": "Complete your learning streak - one more day to go!"
     },
-    "animal": {
+  "animal": {
+    "levelBaby": "We're still babies, getting our bearings.",
+    "levelAdolescent": "We're growing well, keep it up!",
+    "levelAdult": "Wow, adult level! We're becoming legends.",
     "contextDashboard": [
       "Ready to learn something new today?",
       "I believe in you! Let's study together! ✨",
@@ -407,7 +410,8 @@
     "querySent": "Query sent:",
     "primaryResult": "Primary result:",
     "noResult": "No clear result returned.",
-    "detailedExplanations": "Detailed explanations"
+    "detailedExplanations": "Detailed explanations",
+    "backToDashboard": "Back to Dashboard"
   },
   "errors": {
     "generic": "An error occurred. Please try again.",

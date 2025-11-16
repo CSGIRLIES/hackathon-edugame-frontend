@@ -47,16 +47,8 @@ const Modal: React.FC<ModalProps> = ({
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <div className="modal-icon">{icon}</div>
         <h2 className="modal-title">{title}</h2>
-        {message && <p className="modal-message">{message}</p>}
-        {children}
-        <button
-          type="button"
-          className="btn btn-primary"
-          onClick={handleButtonClick}
-          style={{ minWidth: '160px' }}
-        >
-          {buttonText}
-        </button>
+  {message && <p className="modal-message">{message}</p>}
+  {children}
       </div>
     </div>
   );

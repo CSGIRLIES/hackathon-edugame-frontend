@@ -4,6 +4,7 @@ import { useUser } from '../contexts/UserContext.tsx';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../utils/supabaseClient.ts';
 import LanguageSelector from './LanguageSelector.tsx';
+import Modal from './Modal.tsx';
 
 const UserHeader: React.FC = () => {
   const { t } = useTranslation();
@@ -11,16 +12,19 @@ const UserHeader: React.FC = () => {
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isStreakDropdownOpen, setIsStreakDropdownOpen] = useState(false);
+  const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const streakDropdownRef = useRef<HTMLDivElement>(null);
 
-  const handleSignOut = async () => {
-    const confirm = window.confirm(t('auth.signOutConfirm'));
-    if (confirm) {
-      await supabase.auth.signOut();
-      setUser(null);
-      navigate('/');
-    }
+  const handleSignOut = () => {
+    setIsSignOutModalOpen(true);
+  };
+
+  const confirmSignOut = async () => {
+    setIsSignOutModalOpen(false);
+    await supabase.auth.signOut();
+    setUser(null);
+    navigate('/');
   };
 
   const toggleDropdown = () => {
@@ -155,6 +159,40 @@ const UserHeader: React.FC = () => {
             </div>
           </>
         )}
+
+        {/* Sign Out Confirmation Modal */}
+        <Modal
+          isOpen={isSignOutModalOpen}
+          onClose={() => setIsSignOutModalOpen(false)}
+          title={t('auth.signOutConfirm')}
+          message=""
+          icon="😢"
+        >
+          <div className="btn-row">
+            <button
+              type="button"
+              className="btn btn-secondary"
+              style={{ backgroundColor: 'red', color: 'white', border: 'none', padding: '10px', margin: '5px' }}
+              onClick={() => {
+                console.log('Annuler clicked');
+                setIsSignOutModalOpen(false);
+              }}
+            >
+              Annuler
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary"
+              style={{ backgroundColor: 'green', color: 'white', border: 'none', padding: '10px', margin: '5px' }}
+              onClick={() => {
+                console.log('Confirm Sign Out clicked');
+                confirmSignOut();
+              }}
+            >
+              {t('auth.signOut')}
+            </button>
+          </div>
+        </Modal>
       </div>
     </header>
   );

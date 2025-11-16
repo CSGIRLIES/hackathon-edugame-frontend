@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
+
 import AuthPage from './pages/AuthPage.tsx';
 import OnboardingPage from './pages/OnboardingPage.tsx';
 import DashboardPage from './pages/DashboardPage.tsx';

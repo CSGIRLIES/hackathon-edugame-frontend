@@ -167,7 +167,10 @@
       "recommendation3": "Envisagez d'augmenter votre objectif d'étude quotidien à 35 minutes",
       "recommendation4": "Complétez votre série d'apprentissage - plus qu'un jour à tenir !"
     },
-    "animal": {
+  "animal": {
+    "levelBaby": "On est encore bébé, on prend nos marques.",
+    "levelAdolescent": "On grandit bien, continue comme ça !",
+    "levelAdult": "Wow, niveau adulte ! On devient une légende.",
     "contextDashboard": [
       "Prêt à apprendre quelque chose de nouveau aujourd'hui ?",
       "Je crois en toi ! Étudions ensemble ! ✨",
@@ -407,7 +410,25 @@
     "querySent": "Requête envoyée :",
     "primaryResult": "Résultat principal :",
     "noResult": "Pas de résultat clair renvoyé.",
-    "detailedExplanations": "Explications détaillées"
+    "detailedExplanations": "Explications détaillées",
+    "backToDashboard": "Retour au tableau de bord"
+  },
+  "landing": {
+    "heroTitle": "Adoptez votre compagnon d'étude cozy",
+    "heroSubtitle": "Un renard magique ou un chiot mignon qui grandit avec votre XP et vos séries, transformant les révisions en aventure kawaii.",
+    "getStarted": "Commencer",
+    "learnMore": "En Savoir Plus →",
+    "whyChoose": "Pourquoi Choisir Pawfriend ?",
+    "feature1Title": "Apprentissage Personnalisé",
+    "feature1Desc": "Quiz et guides d'étude alimentés par IA adaptés rien que pour vous.",
+    "feature2Title": "Compagnons Adorables",
+    "feature2Desc": "Regardez votre animal virtuel grandir et évoluer avec vos progrès.",
+    "feature3Title": "Expérience Ludifiée",
+    "feature3Desc": "Gagnez des XP, des séries et des récompenses tout en rendant l'apprentissage amusant.",
+    "ctaTitle": "Prêt à Commencer Votre Aventure d'Apprentissage ?",
+    "ctaDesc": "Rejoignez des milliers d'étudiants qui ont rendu l'étude fun et gratifiante.",
+    "joinNow": "Rejoignez Maintenant - C'est Gratuit ! 🎉",
+    "footer": "© 2024 Pawfriend - Rendre l'Apprentissage Magique"
   },
   "errors": {
     "generic": "Une erreur s'est produite. Veuillez réessayer.",

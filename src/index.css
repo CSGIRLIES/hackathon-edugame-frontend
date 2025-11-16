@@ -710,8 +710,10 @@ code {
   align-items: center;
   justify-content: center;
   z-index: 9999;
+  position: fixed;
   animation: modal-fade-in 0.25s ease;
   padding: 1rem;
+  pointer-events: auto; /* Allow interaction */
 }
 
 .modal-card {
@@ -725,6 +727,7 @@ code {
   text-align: center;
   position: relative;
   animation: modal-slide-up 0.3s ease;
+  pointer-events: auto; /* Allow interaction */
 }
 
 .modal-card::before {
@@ -1251,6 +1254,17 @@ body.dark-mode {
     linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
   background-size: 100% 28px, 28px 100%;
   background-position: 0 0, 0 0;
+}
+
+@keyframes slideInFromBottom {
+  0% {
+    opacity: 0;
+    transform: translateY(100px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* RESPONSIVE LANDING */

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 interface WolframExplanation {
   title: string;
@@ -40,6 +41,7 @@ const THEME_OPTIONS = [
 
 const WolframCompanionPage: React.FC = () => {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
   const isRTL = i18n.language === 'ar';
   const [theme, setTheme] = useState<string>('Core Language & Structure');
   const [task, setTask] = useState<string>('');
@@ -121,6 +123,13 @@ const WolframCompanionPage: React.FC = () => {
         <p className="page-subtitle">
           {t('wolfram.subtitle')}
         </p>
+        <button
+          type="button"
+          className="btn btn-secondary"
+          onClick={() => navigate('/dashboard')}
+        >
+          {t('wolfram.backToDashboard')}
+        </button>
       </header>
 
       <main>

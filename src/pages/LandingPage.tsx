@@ -39,70 +39,90 @@ const LandingPage: React.FC = () => {
 
       {/* Main Content */}
       <main className="landing-main">
-        <section className="landing-hero">
-          <div className="landing-hero-text">
-            <h1 className="landing-hero-title">Adopt your cozy study buddy</h1>
-            <p className="landing-hero-subtitle">
-              A magical fox or a cute puppy that grows with your XP and streaks, turning
-              revisions into a kawaii adventure.
-            </p>
-            <div className="landing-hero-actions">
-              <button
-                type="button"
-                onClick={handleGetStarted}
-                className="landing-btn landing-btn-primary"
-              >
-                🌟 Get Started 🌟
-              </button>
-              <button
-                type="button"
-                className="landing-btn landing-btn-secondary"
-              >
-                Learn More →
-              </button>
+        <div className="landing-page-section" style={{
+          width: '100%',
+          height: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          position: 'relative'
+        }}>
+          <section className="landing-hero">
+            <div className="landing-hero-text">
+              <h1 className="landing-hero-title">
+                <strong style={{ fontSize: '3rem', color: 'black', display: 'block', marginBottom: '0.5rem' }}>
+                  PAWFRIEND
+                </strong>
+                {t('landing.heroTitle')}
+              </h1>
+              <p className="landing-hero-subtitle">
+                {t('landing.heroSubtitle')}
+              </p>
+              <div className="landing-hero-actions">
+                <button
+                  type="button"
+                  onClick={handleGetStarted}
+                  className="landing-btn landing-btn-primary"
+                >
+                  🌟 {t('landing.getStarted')} 🌟
+                </button>
+                <button
+                  type="button"
+                  className="landing-btn landing-btn-secondary"
+                >
+                  {t('landing.learnMore')}
+                </button>
+              </div>
             </div>
-          </div>
 
-          <div className="landing-animal-wrapper">
-            <div className="landing-animal-card">
-              <Animal type="af" color="#ffb3d9" level="baby" context="dashboard" />
-              <div className="landing-floating-icon landing-floating-icon--top-right">💖</div>
-              <div className="landing-floating-icon landing-floating-icon--bottom-left">✨</div>
+            <div className="landing-animal-wrapper">
+              <div className="landing-animal-card">
+                <Animal type="af" color="#ffb3d9" level="baby" context="dashboard" />
+                <div className="landing-floating-icon landing-floating-icon--top-right">💖</div>
+                <div className="landing-floating-icon landing-floating-icon--bottom-left">✨</div>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        </div>
 
-        {/* Features */}
-        <section className="landing-features">
-          <h2 className="landing-section-title">Why Choose Pawfriend?</h2>
-          <div className="landing-features-grid">
-            <div className="landing-feature-card">
-              <h3>🍃 Personalized Learning</h3>
-              <p>AI-powered quizzes and study guides tailored just for you.</p>
+        <div className="landing-page-section" style={{
+          width: '100%',
+          minHeight: '100vh',
+          paddingBottom: '2rem',
+          animation: 'slideInFromBottom 1s ease-out 0.5s both'
+        }}>
+          {/* Features */}
+          <section className="landing-features">
+            <h2 className="landing-section-title">{t('landing.whyChoose')}</h2>
+            <div className="landing-features-grid">
+              <div className="landing-feature-card">
+                <h3>🍃 {t('landing.feature1Title')}</h3>
+                <p>{t('landing.feature1Desc')}</p>
+              </div>
+              <div className="landing-feature-card">
+                <h3>🐾 {t('landing.feature2Title')}</h3>
+                <p>{t('landing.feature2Desc')}</p>
+              </div>
+              <div className="landing-feature-card">
+                <h3>🌈 {t('landing.feature3Title')}</h3>
+                <p>{t('landing.feature3Desc')}</p>
+              </div>
             </div>
-            <div className="landing-feature-card">
-              <h3>🐾 Adorable Companions</h3>
-              <p>Watch your virtual pet grow and evolve with your progress.</p>
-            </div>
-            <div className="landing-feature-card">
-              <h3>🌈 Gamified Experience</h3>
-              <p>Earn XP, streaks, and rewards while making learning fun.</p>
-            </div>
-          </div>
-        </section>
+          </section>
 
-        {/* CTA */}
-        <section className="landing-cta">
-          <h2>Ready to Start Your Learning Adventure?</h2>
-          <p>Join thousands of students who've made studying fun and rewarding.</p>
-          <button
-            type="button"
-            onClick={handleGetStarted}
-            className="landing-btn landing-btn-primary"
-          >
-            Join Now - It's Free! 🎉
-          </button>
-        </section>
+          {/* CTA */}
+          <section className="landing-cta">
+            <h2>{t('landing.ctaTitle')}</h2>
+            <p>{t('landing.ctaDesc')}</p>
+            <button
+              type="button"
+              onClick={handleGetStarted}
+              className="landing-btn landing-btn-primary"
+            >
+              {t('landing.joinNow')}
+            </button>
+          </section>
+        </div>
       </main>
 
       {/* Footer */}
@@ -113,7 +133,7 @@ const LandingPage: React.FC = () => {
           <span>🐶</span>
           <span>🦊</span>
         </div>
-        <p className="landing-footer-text">© 2024 Pawfriend - Making Learning Magical</p>
+        <p className="landing-footer-text">{t('landing.footer')}</p>
       </footer>
     </div>
   );
