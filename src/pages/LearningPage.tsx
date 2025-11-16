@@ -20,6 +20,12 @@ const LearningPage: React.FC = () => {
   const [isPlanLoading, setIsPlanLoading] = useState(false);
   const [planError, setPlanError] = useState<string | null>(null);
   const [studyPlan, setStudyPlan] = useState<any | null>(null);
+  const [showPlanModal, setShowPlanModal] = useState(false);
+  
+  // Cycle execution state
+  const [activePlan, setActivePlan] = useState<any | null>(null);
+  const [currentCycleIndex, setCurrentCycleIndex] = useState(0);
+  const [isInBreak, setIsInBreak] = useState(false);
 
   const [showCompletionModal, setShowCompletionModal] = useState(false);
   const [sessionXP, setSessionXP] = useState(0);
@@ -36,33 +42,85 @@ const LearningPage: React.FC = () => {
     if (isWorking && !isPaused && timeLeft > 0) {
       timer = window.setTimeout(() => setTimeLeft((prev) => prev - 1), 1000);
     } else if (isWorking && timeLeft === 0) {
-      const xpGained = 25; // 25 minutes = 25 XP
-      updateXP(xpGained);
-      updateStreak(); // Update streak when session completes
-      incrementLearningCycle(); // Track completed learning cycle
-
-      // Play completion sound when a Pomodoro cycle finishes
+      // Play completion sound
       try {
         const audio = new Audio('/completion.mp3');
         audio.volume = 0.3;
         audio.play().catch((err) => {
           if (process.env.NODE_ENV === 'development') {
-            // eslint-disable-next-line no-console
             console.info('[LearningPage] Completion sound play blocked:', err);
           }
         });
       } catch (err) {
         if (process.env.NODE_ENV === 'development') {
-          // eslint-disable-next-line no-console
           console.info('[LearningPage] Completion sound error:', err);
         }
       }
 
-      setSessionXP(xpGained);
-      setShowCompletionModal(true);
+      // Handle cycle-based or single session completion
+      if (activePlan && activePlan.cycles) {
+        handleCycleCompletion();
+      } else {
+        // Single session mode
+        const xpGained = 25;
+        updateXP(xpGained);
+        updateStreak();
+        incrementLearningCycle();
+        setSessionXP(xpGained);
+        setShowCompletionModal(true);
+      }
     }
     return () => window.clearTimeout(timer);
-  }, [timeLeft, isWorking, isPaused, updateXP, updateStreak, user]);
+  }, [timeLeft, isWorking, isPaused, activePlan, currentCycleIndex, isInBreak, updateXP, updateStreak, user]);
+
+  const handleCycleCompletion = () => {
+    if (!activePlan || !activePlan.cycles) return;
+
+    const currentCycle = activePlan.cycles[currentCycleIndex];
+
+    if (!isInBreak) {
+      // Just finished focus session - award XP
+      const xpGained = 25;
+      updateXP(xpGained);
+      incrementLearningCycle();
+
+      // Check if this was the last cycle
+      if (currentCycleIndex === activePlan.cycles.length - 1) {
+        // Last cycle complete - show final completion
+        updateStreak();
+        setSessionXP(activePlan.pomodoroCount * 25);
+        setIsWorking(false);
+        setActivePlan(null);
+        setCurrentCycleIndex(0);
+        setIsInBreak(false);
+        setShowCompletionModal(true);
+      } else {
+        // Start break
+        setIsInBreak(true);
+        setTimeLeft((currentCycle.breakMinutes || 5) * 60);
+        setCheckedTasks([false, false, false]);
+      }
+    } else {
+      // Break finished - move to next cycle
+      setIsInBreak(false);
+      setCurrentCycleIndex(prev => prev + 1);
+      setTimeLeft(25 * 60); // Next focus session
+      setCheckedTasks([false, false, false]);
+    }
+  };
+
+  const startStudyPlan = () => {
+    if (!studyPlan || !studyPlan.cycles || studyPlan.cycles.length === 0) return;
+    
+    setActivePlan(studyPlan);
+    setCurrentCycleIndex(0);
+    setIsInBreak(false);
+    setIsWorking(true);
+    setIsPaused(false);
+    setTimeLeft(25 * 60);
+    setCheckedTasks([false, false, false]);
+    setShowPlanModal(false);
+  };
 
   const handleStart = () => {
     if (topic.trim()) {
@@ -145,6 +203,7 @@ const LearningPage: React.FC = () => {
       }
 
       setStudyPlan(data.studyPlan || data);
+      setShowPlanModal(true); // Show modal when plan is generated
     } catch (e: any) {
       console.error('[LearningPage] Study plan error', e);
       setPlanError(e.message || 'Impossible de générer un plan pour le moment.');
@@ -219,10 +278,25 @@ const LearningPage: React.FC = () => {
           {isWorking && (
             <>
               <div className="card-header" style={{ marginBottom: '1rem' }}>
-                <h2 className="card-title">{t('learning.focusingOn', { topic })}</h2>
-                <p className="card-subtitle">
-                  {t('learning.focusSubtitle')}
-                </p>
+                {activePlan ? (
+                  <>
+                    <h2 className="card-title">
+                      {isInBreak ? '☕ Break Time!' : `🔄 Cycle ${currentCycleIndex + 1} of ${activePlan.pomodoroCount}`}
+                    </h2>
+                    <p className="card-subtitle">
+                      {isInBreak 
+                        ? 'Take a break! Stretch, hydrate, and relax.' 
+                        : activePlan.cycles[currentCycleIndex]?.focusTask || 'Focus session'}
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <h2 className="card-title">{t('learning.focusingOn', { topic })}</h2>
+                    <p className="card-subtitle">
+                      {t('learning.focusSubtitle')}
+                    </p>
+                  </>
+                )}
               </div>
 
               <div style={{ textAlign: 'center', marginBottom: '1.25rem' }}>
@@ -232,64 +306,156 @@ const LearningPage: React.FC = () => {
                 </div>
               </div>
 
-              <div style={{ 
-                background: 'rgba(56, 189, 248, 0.1)', 
-                border: '1px solid rgba(56, 189, 248, 0.3)',
-                borderRadius: '0.75rem',
-                padding: '1rem',
-                marginBottom: '1.25rem',
-                textAlign: 'left'
-              }}>
-                <h3 style={{ 
-                  fontSize: '0.9rem', 
-                  color: 'var(--accent-blue)', 
-                  marginBottom: '0.75rem',
-                  fontWeight: 600
+              {!isInBreak && (
+                <div style={{ 
+                  background: 'rgba(56, 189, 248, 0.1)', 
+                  border: '1px solid rgba(56, 189, 248, 0.3)',
+                  borderRadius: '0.75rem',
+                  padding: '1rem',
+                  marginBottom: '1.25rem',
+                  textAlign: 'left'
                 }}>
-                  {t('learning.focusEndTitle')}
-                </h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                  {[
-                    t('learning.focusEndTask1'),
-                    t('learning.focusEndTask2'),
-                    t('learning.focusEndTask3')
-                  ].map((task, index) => (
-                    <label 
-                      key={index}
-                      style={{ 
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        gap: '0.5rem',
-                        cursor: 'pointer',
-                        fontSize: '0.85rem',
-                        transition: 'opacity 0.2s ease'
-                      }}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={checkedTasks[index]}
-                        onChange={() => {
-                          const newChecked = [...checkedTasks];
-                          newChecked[index] = !newChecked[index];
-                          setCheckedTasks(newChecked);
-                        }}
-                        style={{ 
-                          width: '16px', 
-                          height: '16px',
-                          cursor: 'pointer',
-                          accentColor: 'var(--accent-blue)'
-                        }}
-                      />
-                      <span style={{ 
-                        textDecoration: checkedTasks[index] ? 'line-through' : 'none',
-                        opacity: checkedTasks[index] ? 0.6 : 1
+                  {activePlan && activePlan.cycles[currentCycleIndex] ? (
+                    <>
+                      <h3 style={{ 
+                        fontSize: '0.9rem', 
+                        color: 'var(--accent-blue)', 
+                        marginBottom: '0.75rem',
+                        fontWeight: 600
                       }}>
-                        {task}
-                      </span>
-                    </label>
-                  ))}
+                        🎯 Cycle {currentCycleIndex + 1} Objectives
+                      </h3>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                        {activePlan.cycles[currentCycleIndex].objectives?.map((objective: string, index: number) => (
+                          <label 
+                            key={index}
+                            style={{ 
+                              display: 'flex', 
+                              alignItems: 'center', 
+                              gap: '0.5rem',
+                              cursor: 'pointer',
+                              fontSize: '0.85rem',
+                              transition: 'opacity 0.2s ease'
+                            }}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={checkedTasks[index] || false}
+                              onChange={() => {
+                                const newChecked = [...checkedTasks];
+                                newChecked[index] = !newChecked[index];
+                                setCheckedTasks(newChecked);
+                              }}
+                              style={{ 
+                                width: '16px', 
+                                height: '16px',
+                                cursor: 'pointer',
+                                accentColor: 'var(--accent-blue)'
+                              }}
+                            />
+                            <span style={{ 
+                              textDecoration: checkedTasks[index] ? 'line-through' : 'none',
+                              opacity: checkedTasks[index] ? 0.6 : 1
+                            }}>
+                              {objective}
+                            </span>
+                          </label>
+                        )) || [
+                          t('learning.focusEndTask1'),
+                          t('learning.focusEndTask2'),
+                          t('learning.focusEndTask3')
+                        ].map((task, index) => (
+                          <label 
+                            key={index}
+                            style={{ 
+                              display: 'flex', 
+                              alignItems: 'center', 
+                              gap: '0.5rem',
+                              cursor: 'pointer',
+                              fontSize: '0.85rem',
+                              transition: 'opacity 0.2s ease'
+                            }}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={checkedTasks[index]}
+                              onChange={() => {
+                                const newChecked = [...checkedTasks];
+                                newChecked[index] = !newChecked[index];
+                                setCheckedTasks(newChecked);
+                              }}
+                              style={{ 
+                                width: '16px', 
+                                height: '16px',
+                                cursor: 'pointer',
+                                accentColor: 'var(--accent-blue)'
+                              }}
+                            />
+                            <span style={{ 
+                              textDecoration: checkedTasks[index] ? 'line-through' : 'none',
+                              opacity: checkedTasks[index] ? 0.6 : 1
+                            }}>
+                              {task}
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <h3 style={{ 
+                        fontSize: '0.9rem', 
+                        color: 'var(--accent-blue)', 
+                        marginBottom: '0.75rem',
+                        fontWeight: 600
+                      }}>
+                        {t('learning.focusEndTitle')}
+                      </h3>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                        {[
+                          t('learning.focusEndTask1'),
+                          t('learning.focusEndTask2'),
+                          t('learning.focusEndTask3')
+                        ].map((task, index) => (
+                          <label 
+                            key={index}
+                            style={{ 
+                              display: 'flex', 
+                              alignItems: 'center', 
+                              gap: '0.5rem',
+                              cursor: 'pointer',
+                              fontSize: '0.85rem',
+                              transition: 'opacity 0.2s ease'
+                            }}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={checkedTasks[index]}
+                              onChange={() => {
+                                const newChecked = [...checkedTasks];
+                                newChecked[index] = !newChecked[index];
+                                setCheckedTasks(newChecked);
+                              }}
+                              style={{ 
+                                width: '16px', 
+                                height: '16px',
+                                cursor: 'pointer',
+                                accentColor: 'var(--accent-blue)'
+                              }}
+                            />
+                            <span style={{ 
+                              textDecoration: checkedTasks[index] ? 'line-through' : 'none',
+                              opacity: checkedTasks[index] ? 0.6 : 1
+                            }}>
+                              {task}
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                    </>
+                  )}
                 </div>
-              </div>
+              )}
 
               <div className="btn-row">
                 <button
@@ -306,6 +472,9 @@ const LearningPage: React.FC = () => {
                     setIsWorking(false);
                     setIsPaused(false);
                     setTimeLeft(25 * 60);
+                    setActivePlan(null);
+                    setCurrentCycleIndex(0);
+                    setIsInBreak(false);
                   }}
                 >
                   {t('learning.endWithoutQuiz')}
@@ -416,29 +585,119 @@ const LearningPage: React.FC = () => {
                 {planError}
               </p>
             )}
-            {studyPlan && (
-              <div style={{ marginTop: '0.75rem', fontSize: '0.85rem' }}>
-                <p className="helper-text">
-                  {t('learning.planTotalTime', { time: studyPlan.totalTime, count: studyPlan.pomodoroCount })}
-                </p>
-                {Array.isArray(studyPlan.cycles) && (
-                  <ul style={{ paddingLeft: '1.2rem', marginTop: '0.5rem' }}>
-                    {studyPlan.cycles.slice(0, 3).map((cycle: any, idx: number) => (
-                      <li key={idx} style={{ marginBottom: '0.35rem' }}>
-                        <strong>{t('learning.planCycle', { number: cycle.cycleNumber })}</strong> : {cycle.focusTask}
-                      </li>
-                    ))}
-                    {studyPlan.cycles.length > 3 && (
-                      <li className="helper-text">{t('learning.planMoreCycles')}</li>
-                    )}
-                  </ul>
-                )}
-              </div>
-            )}
           </div>
         </section>
       </main>
 
+      {/* Study Plan Modal */}
+      {studyPlan && (
+        <Modal
+          isOpen={showPlanModal}
+          onClose={() => setShowPlanModal(false)}
+          title="📚 Your Personalized Study Plan"
+          message=""
+          icon="🎯"
+          buttonText="Start Study Plan"
+          buttonAction={startStudyPlan}
+        >
+          <div style={{ textAlign: 'left', maxHeight: '60vh', overflowY: 'auto' }}>
+            {/* Summary */}
+            <div style={{ 
+              padding: '1rem', 
+              background: 'rgba(139, 92, 246, 0.1)',
+              borderRadius: '0.75rem',
+              marginBottom: '1.5rem'
+            }}>
+              <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: 1.6 }}>
+                <strong>📊 Total Time:</strong> {studyPlan.totalTime} minutes<br/>
+                <strong>🔄 Pomodoro Cycles:</strong> {studyPlan.pomodoroCount}<br/>
+                <strong>⏱️ Per Cycle:</strong> 25 min focus + 5 min break
+              </p>
+              {studyPlan.summary && (
+                <p style={{ marginTop: '0.75rem', fontSize: '0.9rem', opacity: 0.9 }}>
+                  {studyPlan.summary}
+                </p>
+              )}
+            </div>
+
+            {/* Cycles */}
+            {Array.isArray(studyPlan.cycles) && studyPlan.cycles.map((cycle: any, idx: number) => (
+              <div key={idx} style={{
+                padding: '1rem',
+                background: 'rgba(56, 189, 248, 0.08)',
+                borderRadius: '0.75rem',
+                marginBottom: '1rem',
+                border: '1px solid rgba(56, 189, 248, 0.2)'
+              }}>
+                <h4 style={{ 
+                  margin: '0 0 0.75rem 0', 
+                  fontSize: '1rem',
+                  color: 'var(--accent-blue)'
+                }}>
+                  🔄 Cycle {cycle.cycleNumber} ({cycle.focusMinutes || 25} min focus + {cycle.breakMinutes || 5} min break)
+                </h4>
+                
+                <div style={{ marginBottom: '0.75rem' }}>
+                  <strong style={{ color: 'var(--text-main)' }}>📖 Focus Task:</strong>
+                  <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.9rem' }}>
+                    {cycle.focusTask}
+                  </p>
+                </div>
+
+                {cycle.detailedExplanation && (
+                  <div style={{ marginBottom: '0.75rem' }}>
+                    <strong style={{ color: 'var(--text-main)' }}>💡 What to do:</strong>
+                    <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.85rem', lineHeight: 1.5 }}>
+                      {cycle.detailedExplanation}
+                    </p>
+                  </div>
+                )}
+
+                {cycle.objectives && cycle.objectives.length > 0 && (
+                  <div style={{ marginBottom: '0.75rem' }}>
+                    <strong style={{ color: 'var(--text-main)' }}>🎯 Objectives:</strong>
+                    <ul style={{ margin: '0.25rem 0 0 0', paddingLeft: '1.5rem', fontSize: '0.85rem' }}>
+                      {cycle.objectives.map((obj: string, i: number) => (
+                        <li key={i} style={{ marginBottom: '0.25rem' }}>{obj}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {cycle.keyPoints && cycle.keyPoints.length > 0 && (
+                  <div>
+                    <strong style={{ color: 'var(--text-main)' }}>🔑 Key Points:</strong>
+                    <ul style={{ margin: '0.25rem 0 0 0', paddingLeft: '1.5rem', fontSize: '0.85rem' }}>
+                      {cycle.keyPoints.map((point: string, i: number) => (
+                        <li key={i} style={{ marginBottom: '0.25rem' }}>{point}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            ))}
+
+            {/* Tips */}
+            {studyPlan.tips && studyPlan.tips.length > 0 && (
+              <div style={{
+                padding: '1rem',
+                background: 'rgba(34, 197, 94, 0.1)',
+                borderRadius: '0.75rem',
+                border: '1px solid rgba(34, 197, 94, 0.2)'
+              }}>
+                <strong style={{ color: 'var(--text-main)' }}>💪 Study Tips:</strong>
+                <ul style={{ margin: '0.5rem 0 0 0', paddingLeft: '1.5rem', fontSize: '0.85rem' }}>
+                  {studyPlan.tips.map((tip: string, i: number) => (
+                    <li key={i} style={{ marginBottom: '0.25rem' }}>{tip}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        </Modal>
+      )}
+
+      {/* Completion Modal */}
       <Modal
         isOpen={showCompletionModal}
         onClose={() => {

@@ -260,9 +260,8 @@ const Animal: React.FC<AnimalProps> = ({ type, color, level, xp = 0, context = '
 
   return (
     <div className="animal-container">
-      <div className="animal-name">
-        Compagnon • {level}
-        {context !== 'onboarding' && (
+      {context !== 'onboarding' && (
+        <div className="animal-name">
           <button
             className="animal-food-bubble"
             onClick={handleFoodBubbleClick}
@@ -281,8 +280,8 @@ const Animal: React.FC<AnimalProps> = ({ type, color, level, xp = 0, context = '
           >
             {foodEmoji}
           </button>
-        )}
-      </div>
+        </div>
+      )}
 
       {showFoodMenu && (
         <div

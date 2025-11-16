@@ -35,9 +35,13 @@ const LearningAnalytics: React.FC<LearningAnalyticsProps> = ({ style }) => {
         return;
       }
 
-      // Calculate average score based on XP (rough estimate)
-      // Higher XP = better average score
-      const averageScore = Math.min(100, Math.floor((user.xp / 100) * 20) + 70);
+      // Estimate quiz-based average score from XP
+      // Each quiz can give up to 60 XP (3 questions × 20 XP), so
+      //   averageScore ≈ (XP per quiz / 60) * 100, clamped between 0 and 100.
+      const maxQuizXP = 60;
+      const estimatedQuizCount = Math.max(1, Math.floor(user.xp / maxQuizXP) || 1);
+      const averageXPPerQuiz = user.xp / estimatedQuizCount;
+      const averageScore = Math.min(100, Math.max(0, Math.floor((averageXPPerQuiz / maxQuizXP) * 100)));
 
       // Distribute completed cycles across the week for visualization
       // This is a simplified view since we don't track daily cycles yet
@@ -62,7 +66,8 @@ const LearningAnalytics: React.FC<LearningAnalyticsProps> = ({ style }) => {
       });
 
       const realAnalytics: AnalyticsData = {
-        totalQuizzes: Math.floor(user.xp / 20), // Rough estimate: each quiz gives ~20 XP
+        // Rough estimate: each full quiz gives up to 60 XP (3 questions × 20 XP)
+        totalQuizzes: Math.max(0, Math.floor(user.xp / 60)),
         averageScore,
         totalStudyTime: user.totalStudyTime,
         favoriteTopics: [
