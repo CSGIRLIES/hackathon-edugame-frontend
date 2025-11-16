@@ -21,6 +21,11 @@ const LearningPage: React.FC = () => {
   const [planError, setPlanError] = useState<string | null>(null);
   const [studyPlan, setStudyPlan] = useState<any | null>(null);
   const [showPlanModal, setShowPlanModal] = useState(false);
+  
+  // Cycle execution state
+  const [activePlan, setActivePlan] = useState<any | null>(null);
+  const [currentCycleIndex, setCurrentCycleIndex] = useState(0);
+  const [isInBreak, setIsInBreak] = useState(false);
 
   const [showCompletionModal, setShowCompletionModal] = useState(false);
   const [sessionXP, setSessionXP] = useState(0);
@@ -37,33 +42,85 @@ const LearningPage: React.FC = () => {
     if (isWorking && !isPaused && timeLeft > 0) {
       timer = window.setTimeout(() => setTimeLeft((prev) => prev - 1), 1000);
     } else if (isWorking && timeLeft === 0) {
-      const xpGained = 25; // 25 minutes = 25 XP
-      updateXP(xpGained);
-      updateStreak(); // Update streak when session completes
-      incrementLearningCycle(); // Track completed learning cycle
-
-      // Play completion sound when a Pomodoro cycle finishes
+      // Play completion sound
       try {
         const audio = new Audio('/completion.mp3');
         audio.volume = 0.3;
         audio.play().catch((err) => {
           if (process.env.NODE_ENV === 'development') {
-            // eslint-disable-next-line no-console
             console.info('[LearningPage] Completion sound play blocked:', err);
           }
         });
       } catch (err) {
         if (process.env.NODE_ENV === 'development') {
-          // eslint-disable-next-line no-console
           console.info('[LearningPage] Completion sound error:', err);
         }
       }
 
-      setSessionXP(xpGained);
-      setShowCompletionModal(true);
+      // Handle cycle-based or single session completion
+      if (activePlan && activePlan.cycles) {
+        handleCycleCompletion();
+      } else {
+        // Single session mode
+        const xpGained = 25;
+        updateXP(xpGained);
+        updateStreak();
+        incrementLearningCycle();
+        setSessionXP(xpGained);
+        setShowCompletionModal(true);
+      }
     }
     return () => window.clearTimeout(timer);
-  }, [timeLeft, isWorking, isPaused, updateXP, updateStreak, user]);
+  }, [timeLeft, isWorking, isPaused, activePlan, currentCycleIndex, isInBreak, updateXP, updateStreak, user]);
+
+  const handleCycleCompletion = () => {
+    if (!activePlan || !activePlan.cycles) return;
+
+    const currentCycle = activePlan.cycles[currentCycleIndex];
+
+    if (!isInBreak) {
+      // Just finished focus session - award XP
+      const xpGained = 25;
+      updateXP(xpGained);
+      incrementLearningCycle();
+
+      // Check if this was the last cycle
+      if (currentCycleIndex === activePlan.cycles.length - 1) {
+        // Last cycle complete - show final completion
+        updateStreak();
+        setSessionXP(activePlan.pomodoroCount * 25);
+        setIsWorking(false);
+        setActivePlan(null);
+        setCurrentCycleIndex(0);
+        setIsInBreak(false);
+        setShowCompletionModal(true);
+      } else {
+        // Start break
+        setIsInBreak(true);
+        setTimeLeft((currentCycle.breakMinutes || 5) * 60);
+        setCheckedTasks([false, false, false]);
+      }
+    } else {
+      // Break finished - move to next cycle
+      setIsInBreak(false);
+      setCurrentCycleIndex(prev => prev + 1);
+      setTimeLeft(25 * 60); // Next focus session
+      setCheckedTasks([false, false, false]);
+    }
+  };
+
+  const startStudyPlan = () => {
+    if (!studyPlan || !studyPlan.cycles || studyPlan.cycles.length === 0) return;
+    
+    setActivePlan(studyPlan);
+    setCurrentCycleIndex(0);
+    setIsInBreak(false);
+    setIsWorking(true);
+    setIsPaused(false);
+    setTimeLeft(25 * 60);
+    setCheckedTasks([false, false, false]);
+    setShowPlanModal(false);
+  };
 
   const handleStart = () => {
     if (topic.trim()) {
@@ -221,10 +278,25 @@ const LearningPage: React.FC = () => {
           {isWorking && (
             <>
               <div className="card-header" style={{ marginBottom: '1rem' }}>
-                <h2 className="card-title">{t('learning.focusingOn', { topic })}</h2>
-                <p className="card-subtitle">
-                  {t('learning.focusSubtitle')}
-                </p>
+                {activePlan ? (
+                  <>
+                    <h2 className="card-title">
+                      {isInBreak ? '☕ Break Time!' : `🔄 Cycle ${currentCycleIndex + 1} of ${activePlan.pomodoroCount}`}
+                    </h2>
+                    <p className="card-subtitle">
+                      {isInBreak 
+                        ? 'Take a break! Stretch, hydrate, and relax.' 
+                        : activePlan.cycles[currentCycleIndex]?.focusTask || 'Focus session'}
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <h2 className="card-title">{t('learning.focusingOn', { topic })}</h2>
+                    <p className="card-subtitle">
+                      {t('learning.focusSubtitle')}
+                    </p>
+                  </>
+                )}
               </div>
 
               <div style={{ textAlign: 'center', marginBottom: '1.25rem' }}>
@@ -234,64 +306,156 @@ const LearningPage: React.FC = () => {
                 </div>
               </div>
 
-              <div style={{ 
-                background: 'rgba(56, 189, 248, 0.1)', 
-                border: '1px solid rgba(56, 189, 248, 0.3)',
-                borderRadius: '0.75rem',
-                padding: '1rem',
-                marginBottom: '1.25rem',
-                textAlign: 'left'
-              }}>
-                <h3 style={{ 
-                  fontSize: '0.9rem', 
-                  color: 'var(--accent-blue)', 
-                  marginBottom: '0.75rem',
-                  fontWeight: 600
+              {!isInBreak && (
+                <div style={{ 
+                  background: 'rgba(56, 189, 248, 0.1)', 
+                  border: '1px solid rgba(56, 189, 248, 0.3)',
+                  borderRadius: '0.75rem',
+                  padding: '1rem',
+                  marginBottom: '1.25rem',
+                  textAlign: 'left'
                 }}>
-                  {t('learning.focusEndTitle')}
-                </h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                  {[
-                    t('learning.focusEndTask1'),
-                    t('learning.focusEndTask2'),
-                    t('learning.focusEndTask3')
-                  ].map((task, index) => (
-                    <label 
-                      key={index}
-                      style={{ 
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        gap: '0.5rem',
-                        cursor: 'pointer',
-                        fontSize: '0.85rem',
-                        transition: 'opacity 0.2s ease'
-                      }}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={checkedTasks[index]}
-                        onChange={() => {
-                          const newChecked = [...checkedTasks];
-                          newChecked[index] = !newChecked[index];
-                          setCheckedTasks(newChecked);
-                        }}
-                        style={{ 
-                          width: '16px', 
-                          height: '16px',
-                          cursor: 'pointer',
-                          accentColor: 'var(--accent-blue)'
-                        }}
-                      />
-                      <span style={{ 
-                        textDecoration: checkedTasks[index] ? 'line-through' : 'none',
-                        opacity: checkedTasks[index] ? 0.6 : 1
+                  {activePlan && activePlan.cycles[currentCycleIndex] ? (
+                    <>
+                      <h3 style={{ 
+                        fontSize: '0.9rem', 
+                        color: 'var(--accent-blue)', 
+                        marginBottom: '0.75rem',
+                        fontWeight: 600
                       }}>
-                        {task}
-                      </span>
-                    </label>
-                  ))}
+                        🎯 Cycle {currentCycleIndex + 1} Objectives
+                      </h3>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                        {activePlan.cycles[currentCycleIndex].objectives?.map((objective: string, index: number) => (
+                          <label 
+                            key={index}
+                            style={{ 
+                              display: 'flex', 
+                              alignItems: 'center', 
+                              gap: '0.5rem',
+                              cursor: 'pointer',
+                              fontSize: '0.85rem',
+                              transition: 'opacity 0.2s ease'
+                            }}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={checkedTasks[index] || false}
+                              onChange={() => {
+                                const newChecked = [...checkedTasks];
+                                newChecked[index] = !newChecked[index];
+                                setCheckedTasks(newChecked);
+                              }}
+                              style={{ 
+                                width: '16px', 
+                                height: '16px',
+                                cursor: 'pointer',
+                                accentColor: 'var(--accent-blue)'
+                              }}
+                            />
+                            <span style={{ 
+                              textDecoration: checkedTasks[index] ? 'line-through' : 'none',
+                              opacity: checkedTasks[index] ? 0.6 : 1
+                            }}>
+                              {objective}
+                            </span>
+                          </label>
+                        )) || [
+                          t('learning.focusEndTask1'),
+                          t('learning.focusEndTask2'),
+                          t('learning.focusEndTask3')
+                        ].map((task, index) => (
+                          <label 
+                            key={index}
+                            style={{ 
+                              display: 'flex', 
+                              alignItems: 'center', 
+                              gap: '0.5rem',
+                              cursor: 'pointer',
+                              fontSize: '0.85rem',
+                              transition: 'opacity 0.2s ease'
+                            }}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={checkedTasks[index]}
+                              onChange={() => {
+                                const newChecked = [...checkedTasks];
+                                newChecked[index] = !newChecked[index];
+                                setCheckedTasks(newChecked);
+                              }}
+                              style={{ 
+                                width: '16px', 
+                                height: '16px',
+                                cursor: 'pointer',
+                                accentColor: 'var(--accent-blue)'
+                              }}
+                            />
+                            <span style={{ 
+                              textDecoration: checkedTasks[index] ? 'line-through' : 'none',
+                              opacity: checkedTasks[index] ? 0.6 : 1
+                            }}>
+                              {task}
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <h3 style={{ 
+                        fontSize: '0.9rem', 
+                        color: 'var(--accent-blue)', 
+                        marginBottom: '0.75rem',
+                        fontWeight: 600
+                      }}>
+                        {t('learning.focusEndTitle')}
+                      </h3>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                        {[
+                          t('learning.focusEndTask1'),
+                          t('learning.focusEndTask2'),
+                          t('learning.focusEndTask3')
+                        ].map((task, index) => (
+                          <label 
+                            key={index}
+                            style={{ 
+                              display: 'flex', 
+                              alignItems: 'center', 
+                              gap: '0.5rem',
+                              cursor: 'pointer',
+                              fontSize: '0.85rem',
+                              transition: 'opacity 0.2s ease'
+                            }}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={checkedTasks[index]}
+                              onChange={() => {
+                                const newChecked = [...checkedTasks];
+                                newChecked[index] = !newChecked[index];
+                                setCheckedTasks(newChecked);
+                              }}
+                              style={{ 
+                                width: '16px', 
+                                height: '16px',
+                                cursor: 'pointer',
+                                accentColor: 'var(--accent-blue)'
+                              }}
+                            />
+                            <span style={{ 
+                              textDecoration: checkedTasks[index] ? 'line-through' : 'none',
+                              opacity: checkedTasks[index] ? 0.6 : 1
+                            }}>
+                              {task}
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                    </>
+                  )}
                 </div>
-              </div>
+              )}
 
               <div className="btn-row">
                 <button
@@ -308,6 +472,9 @@ const LearningPage: React.FC = () => {
                     setIsWorking(false);
                     setIsPaused(false);
                     setTimeLeft(25 * 60);
+                    setActivePlan(null);
+                    setCurrentCycleIndex(0);
+                    setIsInBreak(false);
                   }}
                 >
                   {t('learning.endWithoutQuiz')}
@@ -431,11 +598,7 @@ const LearningPage: React.FC = () => {
           message=""
           icon="🎯"
           buttonText="Start Study Plan"
-          buttonAction={() => {
-            setShowPlanModal(false);
-            // TODO: Implement starting the study plan with cycles
-            alert('Study plan accepted! (Implementation pending)');
-          }}
+          buttonAction={startStudyPlan}
         >
           <div style={{ textAlign: 'left', maxHeight: '60vh', overflowY: 'auto' }}>
             {/* Summary */}
