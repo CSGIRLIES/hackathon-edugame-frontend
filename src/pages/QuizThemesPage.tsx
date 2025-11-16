@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 interface ThemeData {
   themes: {
@@ -15,28 +16,54 @@ interface ThemeData {
   };
 }
 
-const difficultyLabel = (difficulty: string) => {
-  switch (difficulty) {
-    case 'beginner':
-      return 'Débutant (Primaire)';
-    case 'intermediate':
-      return 'Intermédiaire (Collège)';
-    case 'advanced':
-      return 'Avancé (Lycée)';
-    case 'pro':
-      return 'Pro (Université)';
-    default:
-      return difficulty;
-  }
-};
-
 const QuizThemesPage: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [themeData, setThemeData] = useState<ThemeData | null>(null);
   const [selectedTheme, setSelectedTheme] = useState<string>('Mathématiques');
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('beginner');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const translateSubject = (subject: string) => {
+    const key = `quizThemes.subjects.${subject}`;
+    const translated = t(key);
+    // Si la clé n'existe pas, t() retourne la clé elle-même, donc on retourne le sujet original
+    return translated === key ? subject : translated;
+  };
+
+  const translateSubTheme = (subTheme: string) => {
+    const key = `quizThemes.subThemes.${subTheme}`;
+    const translated = t(key);
+    return translated === key ? subTheme : translated;
+  };
+
+  const translateQuizTitle = (title: string) => {
+    const key = `quizThemes.quizTitles.${title}`;
+    const translated = t(key);
+    return translated === key ? title : translated;
+  };
+
+  const translateQuizDescription = (description: string) => {
+    const key = `quizThemes.quizDescriptions.${description}`;
+    const translated = t(key);
+    return translated === key ? description : translated;
+  };
+
+  const getDifficultyLabel = (difficulty: string) => {
+    switch (difficulty) {
+      case 'beginner':
+        return t('quizThemes.difficultyBeginner');
+      case 'intermediate':
+        return t('quizThemes.difficultyIntermediate');
+      case 'advanced':
+        return t('quizThemes.difficultyAdvanced');
+      case 'pro':
+        return t('quizThemes.difficultyPro');
+      default:
+        return difficulty;
+    }
+  };
 
   useEffect(() => {
     loadThemeData();
@@ -112,7 +139,7 @@ const QuizThemesPage: React.FC = () => {
     return (
       <div className="page">
         <div className="loading-spinner" style={{ textAlign: 'center', padding: '2rem' }}>
-          {isLoading ? 'Chargement des thèmes...' : error || 'Erreur de chargement'}
+          {isLoading ? t('quizThemes.loadingThemes') : error || t('quizThemes.loadingError')}
         </div>
       </div>
     );
@@ -135,9 +162,9 @@ const QuizThemesPage: React.FC = () => {
   return (
     <div className="page">
       <header className="page-header">
-        <h1 className="page-title">Thèmes de Quiz ✨</h1>
+        <h1 className="page-title">{t('quizThemes.title')}</h1>
         <p className="page-subtitle">
-          Choisis un thème et un niveau de difficulté pour commencer ton quiz pédagogique.
+          {t('quizThemes.subtitle')}
         </p>
       </header>
 
@@ -145,7 +172,7 @@ const QuizThemesPage: React.FC = () => {
         {/* Theme Selection */}
         <section className="card">
           <div className="card-header">
-            <h2 className="card-title">Matière principale</h2>
+            <h2 className="card-title">{t('quizThemes.mainSubject')}</h2>
           </div>
           <div className="theme-tabs">
             {themes.map((theme) => (
@@ -155,16 +182,16 @@ const QuizThemesPage: React.FC = () => {
                 className={`theme-tab ${effectiveSelectedTheme === theme ? 'active' : ''}`}
                 onClick={() => setSelectedTheme(theme)}
               >
-                {theme}
+                {translateSubject(theme)}
               </button>
             ))}
           </div>
         </section>
 
         {/* Difficulty Selection */}
-        <section className="card">
+        <section className="card" style={{ marginTop: '1.5rem' }}>
           <div className="card-header">
-            <h2 className="card-title">Niveau de difficulté</h2>
+            <h2 className="card-title">{t('quizThemes.difficultyLevel')}</h2>
           </div>
           <div className="btn-row">
             {difficulties.map((difficulty) => (
@@ -174,17 +201,17 @@ const QuizThemesPage: React.FC = () => {
                 className={`btn ${selectedDifficulty === difficulty ? 'btn-primary' : 'btn-secondary'}`}
                 onClick={() => setSelectedDifficulty(difficulty)}
               >
-                {difficultyLabel(difficulty)}
+                {getDifficultyLabel(difficulty)}
               </button>
             ))}
           </div>
         </section>
 
         {/* Quiz Selection */}
-        <section className="card">
+        <section className="card" style={{ marginTop: '1.5rem' }}>
           <div className="card-header">
-            <h2 className="card-title">Quiz disponibles</h2>
-            <p className="card-subtitle">Sélectionne le quiz que tu veux faire</p>
+            <h2 className="card-title">{t('quizThemes.availableQuizzes')}</h2>
+            <p className="card-subtitle">{t('quizThemes.selectQuiz')}</p>
           </div>
 
           <div className="quiz-grid">
@@ -200,20 +227,20 @@ const QuizThemesPage: React.FC = () => {
                   className="quiz-card"
                 >
                   <div className="quiz-card-header">
-                    <h3 className="quiz-card-title">{quiz.title}</h3>
+                    <h3 className="quiz-card-title">{translateQuizTitle(quiz.title)}</h3>
                     <span className={`difficulty-badge difficulty-${selectedDifficulty}`}>
-                      {difficultyLabel(selectedDifficulty)}
+                      {getDifficultyLabel(selectedDifficulty)}
                     </span>
                   </div>
-                  <p className="quiz-card-subtitle">{subTheme}</p>
-                  <p className="quiz-card-description">{quiz.description}</p>
+                  <p className="quiz-card-subtitle">{translateSubTheme(subTheme)}</p>
+                  <p className="quiz-card-description">{translateQuizDescription(quiz.description)}</p>
                   <button
                     type="button"
                     className="btn btn-primary quiz-start-btn"
                     onClick={() => handleStartThemedQuiz(quiz.id)}
                     disabled={isLoading}
                   >
-                    {isLoading ? 'Génération...' : 'Commencer le quiz'}
+                    {isLoading ? t('quizThemes.generating') : t('quizThemes.startQuiz')}
                   </button>
                 </div>
               );
@@ -239,14 +266,14 @@ const QuizThemesPage: React.FC = () => {
             className="btn btn-secondary"
             onClick={() => navigate('/dashboard')}
           >
-            Retour au tableau de bord
+            {t('quizThemes.backToDashboard')}
           </button>
           <button
             type="button"
             className="btn btn-outline"
             onClick={() => navigate('/quiz')}
           >
-            Quiz personnalisé
+            {t('quizThemes.customQuiz')}
           </button>
         </div>
       </main>

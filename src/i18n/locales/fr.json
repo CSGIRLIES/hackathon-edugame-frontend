@@ -63,6 +63,9 @@
     "companionXP": "XP",
     "startLearning": "Commencer une session d'apprentissage",
     "quickQuiz": "Quiz rapide",
+    "quizThemes": "Thèmes de Quiz",
+    "customQuiz": "Quiz personnalisé",
+    "wolframCompanion": "Compagnon prof (Wolfram)",
     "companionName": "Ton Compagnon",
     "companionDescription": "{{name}} évolue en fonction de ton XP et t'envoie des petits messages.",
     "todaySessionTitle": "Ta session du jour",
@@ -187,6 +190,12 @@
       "Tu le sais, crois en toi !",
       "Prends ton temps, pas de rush !",
       "Chaque réponse t'apprend quelque chose !"
+    ],
+    "contextOnboarding": [
+      "J'ai hâte de te rencontrer ! ✨",
+      "Cette couleur est parfaite ! 🌈",
+      "Excellent choix de nom ! 🎉",
+      "Nous y sommes presque ! Devenons compagnons ! 💜"
     ]
   },
     "streaks": {
@@ -202,6 +211,64 @@
       "personalBest": "Record personnel",
       "getStarted": "Commence à apprendre pour hydrater ton compagnon aujourd'hui !"
     },
+  "quizThemes": {
+    "title": "Thèmes de Quiz ✨",
+    "subtitle": "Choisis un thème et un niveau de difficulté pour commencer ton quiz pédagogique.",
+    "mainSubject": "Matière principale",
+    "difficultyLevel": "Niveau de difficulté",
+    "availableQuizzes": "Quiz disponibles",
+    "selectQuiz": "Sélectionne le quiz que tu veux faire",
+    "startQuiz": "Commencer le quiz",
+    "generating": "Génération...",
+    "backToDashboard": "Retour au tableau de bord",
+    "customQuiz": "Quiz personnalisé",
+    "loadingThemes": "Chargement des thèmes...",
+    "loadingError": "Erreur de chargement",
+    "difficultyBeginner": "Débutant (Primaire)",
+    "difficultyIntermediate": "Intermédiaire (Collège)",
+    "difficultyAdvanced": "Avancé (Lycée)",
+    "difficultyPro": "Pro (Université)",
+    "subjects": {
+      "Mathématiques": "Mathématiques",
+      "Sciences": "Sciences",
+      "Histoire": "Histoire",
+      "Géographie": "Géographie",
+      "Langues": "Langues",
+      "Informatique": "Informatique"
+    },
+    "subThemes": {
+      "Algèbre": "Algèbre",
+      "Géométrie": "Géométrie",
+      "Calcul": "Calcul",
+      "Biologie": "Biologie",
+      "Chimie": "Chimie",
+      "Physique": "Physique"
+    }
+  },
+  "wolfram": {
+    "title": "Compagnon prof (Wolfram) ✨",
+    "subtitle": "Choisis un thème du Wolfram Language, décris ce que tu veux faire, et laisse ton compagnon interroger Wolfram pour toi.",
+    "step1Title": "1. Choisis un thème",
+    "step1Subtitle": "Les thèmes correspondent aux grandes familles de la documentation Wolfram (données, visualisation, machine learning, géographie, etc.).",
+    "themeLabel": "Thème",
+    "step2Title": "2. Décris ta tâche",
+    "step2Subtitle": "Tu peux rester en français, le compagnon essaiera de formuler une requête Wolfram adaptée. Tu peux aussi écrire directement une requête Wolfram dans le champ suivant si tu le connais déjà.",
+    "taskLabel": "Tâche (en français)",
+    "taskPlaceholder": "Ex : calculer la solution d'une équation, comparer des populations, tracer une courbe, expliquer un phénomène...",
+    "detailsLabel": "Détails (optionnel)",
+    "detailsPlaceholder": "Ex : équation x^2 - 5x + 6 = 0, intervalle de tracé, pays à comparer, etc.",
+    "inputLabel": "Requête Wolfram (optionnel, pour utilisateur avancé)",
+    "inputPlaceholder": "Ex : solve x^2 - 5x + 6 = 0, explain photosynthesis, population of France vs Germany...",
+    "inputHelper": "Si tu remplis ce champ, c'est cette requête qui sera envoyée directement à Wolfram.",
+    "queryButton": "Interroger Wolfram",
+    "querying": "Consultation en cours...",
+    "resultTitle": "Résultat Wolfram",
+    "resultSubtitle": "Voici ce que Wolfram Alpha renvoie pour ta requête.",
+    "querySent": "Requête envoyée :",
+    "primaryResult": "Résultat principal :",
+    "noResult": "Pas de résultat clair renvoyé.",
+    "detailedExplanations": "Explications détaillées"
+  },
   "errors": {
     "generic": "Une erreur s'est produite. Veuillez réessayer.",
     "network": "Erreur réseau. Veuillez vérifier votre connexion.",

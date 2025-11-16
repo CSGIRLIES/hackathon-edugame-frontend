@@ -17,7 +17,7 @@ interface LearningAnalyticsProps {
 }
 
 const LearningAnalytics: React.FC<LearningAnalyticsProps> = ({ style }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { user } = useUser();
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -63,7 +63,7 @@ const LearningAnalytics: React.FC<LearningAnalyticsProps> = ({ style }) => {
     };
 
     loadAnalytics();
-  }, [user]);
+  }, [user, i18n.language, t]);
 
   if (loading) {
     return (

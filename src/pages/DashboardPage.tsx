@@ -160,13 +160,13 @@ const DashboardPage: React.FC = () => {
                 {t('dashboard.startLearning')}
               </button>
               <button className="btn btn-secondary" onClick={() => navigate('/quiz/themes')}>
-                Thèmes de Quiz
+                {t('dashboard.quizThemes')}
               </button>
               <button className="btn btn-outline" onClick={() => navigate('/quiz')}>
-                Quiz personnalisé
+                {t('dashboard.customQuiz')}
               </button>
               <button className="btn btn-outline" onClick={() => navigate('/wolfram')}>
-                Compagnon prof (Wolfram)
+                {t('dashboard.wolframCompanion')}
               </button>
             </div>
 

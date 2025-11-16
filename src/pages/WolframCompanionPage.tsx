@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface WolframExplanation {
   title: string;
@@ -38,6 +39,7 @@ const THEME_OPTIONS = [
 ];
 
 const WolframCompanionPage: React.FC = () => {
+  const { t } = useTranslation();
   const [theme, setTheme] = useState<string>('Core Language & Structure');
   const [task, setTask] = useState<string>('');
   const [details, setDetails] = useState<string>('');
@@ -114,22 +116,22 @@ const WolframCompanionPage: React.FC = () => {
   return (
     <div className="page">
       <header className="page-header">
-        <h1 className="page-title">Compagnon prof (Wolfram) ✨</h1>
+        <h1 className="page-title">{t('wolfram.title')}</h1>
         <p className="page-subtitle">
-          Choisis un thème du Wolfram Language, décris ce que tu veux faire, et laisse ton compagnon interroger Wolfram pour toi.
+          {t('wolfram.subtitle')}
         </p>
       </header>
 
       <main>
         <section className="card">
           <div className="card-header">
-            <h2 className="card-title">1. Choisis un thème</h2>
+            <h2 className="card-title">{t('wolfram.step1Title')}</h2>
             <p className="card-subtitle">
-              Les thèmes correspondent aux grandes familles de la documentation Wolfram (données, visualisation, machine learning, géographie, etc.).
+              {t('wolfram.step1Subtitle')}
             </p>
           </div>
           <div className="input-group">
-            <label className="input-label" htmlFor="wolfram-theme">Thème</label>
+            <label className="input-label" htmlFor="wolfram-theme">{t('wolfram.themeLabel')}</label>
             <select
               id="wolfram-theme"
               className="select"
@@ -147,51 +149,51 @@ const WolframCompanionPage: React.FC = () => {
 
         <section className="card" style={{ marginTop: '1.5rem' }}>
           <div className="card-header">
-            <h2 className="card-title">2. Décris ta tâche</h2>
+            <h2 className="card-title">{t('wolfram.step2Title')}</h2>
             <p className="card-subtitle">
-              Tu peux rester en français, le compagnon essaiera de formuler une requête Wolfram adaptée. Tu peux aussi écrire directement une requête Wolfram dans le champ suivant si tu le connais déjà.
+              {t('wolfram.step2Subtitle')}
             </p>
           </div>
 
           <div className="input-group">
             <label className="input-label" htmlFor="wolfram-task">
-              Tâche (en français)
+              {t('wolfram.taskLabel')}
             </label>
             <input
               id="wolfram-task"
               className="input"
               value={task}
               onChange={(e) => setTask(e.target.value)}
-              placeholder="Ex : calculer la solution d'une équation, comparer des populations, tracer une courbe, expliquer un phénomène..."
+              placeholder={t('wolfram.taskPlaceholder')}
             />
           </div>
 
           <div className="input-group">
             <label className="input-label" htmlFor="wolfram-details">
-              Détails (optionnel)
+              {t('wolfram.detailsLabel')}
             </label>
             <textarea
               id="wolfram-details"
               className="textarea"
               value={details}
               onChange={(e) => setDetails(e.target.value)}
-              placeholder="Ex : équation x^2 - 5x + 6 = 0, intervalle de tracé, pays à comparer, etc."
+              placeholder={t('wolfram.detailsPlaceholder')}
             />
           </div>
 
           <div className="input-group">
             <label className="input-label" htmlFor="wolfram-input">
-              Requête Wolfram (optionnel, pour utilisateur avancé)
+              {t('wolfram.inputLabel')}
             </label>
             <input
               id="wolfram-input"
               className="input"
               value={wolframInput}
               onChange={(e) => setWolframInput(e.target.value)}
-              placeholder="Ex : solve x^2 - 5x + 6 = 0, explain photosynthesis, population of France vs Germany..."
+              placeholder={t('wolfram.inputPlaceholder')}
             />
             <p className="helper-text">
-              Si tu remplis ce champ, c'est cette requête qui sera envoyée directement à Wolfram.
+              {t('wolfram.inputHelper')}
             </p>
           </div>
 
@@ -202,7 +204,7 @@ const WolframCompanionPage: React.FC = () => {
               onClick={handleRun}
               disabled={isLoading}
             >
-              {isLoading ? 'Consultation en cours...' : 'Interroger Wolfram'}
+              {isLoading ? t('wolfram.querying') : t('wolfram.queryButton')}
             </button>
           </div>
 
@@ -216,23 +218,23 @@ const WolframCompanionPage: React.FC = () => {
         {result && (
           <section className="card" style={{ marginTop: '1.5rem' }}>
             <div className="card-header">
-              <h2 className="card-title">Résultat Wolfram</h2>
+              <h2 className="card-title">{t('wolfram.resultTitle')}</h2>
               <p className="card-subtitle">
-                Voici ce que Wolfram Alpha renvoie pour ta requête.
+                {t('wolfram.resultSubtitle')}
               </p>
             </div>
 
             <div className="wolfram-result-block" style={{ padding: '1rem' }}>
               <p>
-                <strong>Requête envoyée :</strong> {result.input}
+                <strong>{t('wolfram.querySent')}</strong> {result.input}
               </p>
               <p style={{ marginTop: '0.5rem' }}>
-                <strong>Résultat principal :</strong> {result.primaryResult || 'Pas de résultat clair renvoyé.'}
+                <strong>{t('wolfram.primaryResult')}</strong> {result.primaryResult || t('wolfram.noResult')}
               </p>
 
               {result.explanations.length > 0 && (
                 <div style={{ marginTop: '1rem' }}>
-                  <h3 className="card-title" style={{ fontSize: '1rem' }}>Explications détaillées</h3>
+                  <h3 className="card-title" style={{ fontSize: '1rem' }}>{t('wolfram.detailedExplanations')}</h3>
                   <ul className="wolfram-explanations">
                     {result.explanations.map((exp, idx) => (
                       <li key={idx}>
