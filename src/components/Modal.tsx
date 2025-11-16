@@ -8,6 +8,7 @@ interface ModalProps {
   icon?: string;
   buttonText?: string;
   buttonAction?: () => void;
+  children?: React.ReactNode;
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -18,6 +19,7 @@ const Modal: React.FC<ModalProps> = ({
   icon = '✨',
   buttonText = 'Continuer',
   buttonAction,
+  children,
 }) => {
   useEffect(() => {
     if (isOpen) {
@@ -45,7 +47,8 @@ const Modal: React.FC<ModalProps> = ({
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <div className="modal-icon">{icon}</div>
         <h2 className="modal-title">{title}</h2>
-        <p className="modal-message">{message}</p>
+        {message && <p className="modal-message">{message}</p>}
+        {children}
         <button
           type="button"
           className="btn btn-primary"

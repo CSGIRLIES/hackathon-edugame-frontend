@@ -20,6 +20,7 @@ const LearningPage: React.FC = () => {
   const [isPlanLoading, setIsPlanLoading] = useState(false);
   const [planError, setPlanError] = useState<string | null>(null);
   const [studyPlan, setStudyPlan] = useState<any | null>(null);
+  const [showPlanModal, setShowPlanModal] = useState(false);
 
   const [showCompletionModal, setShowCompletionModal] = useState(false);
   const [sessionXP, setSessionXP] = useState(0);
@@ -145,6 +146,7 @@ const LearningPage: React.FC = () => {
       }
 
       setStudyPlan(data.studyPlan || data);
+      setShowPlanModal(true); // Show modal when plan is generated
     } catch (e: any) {
       console.error('[LearningPage] Study plan error', e);
       setPlanError(e.message || 'Impossible de générer un plan pour le moment.');
@@ -416,29 +418,123 @@ const LearningPage: React.FC = () => {
                 {planError}
               </p>
             )}
-            {studyPlan && (
-              <div style={{ marginTop: '0.75rem', fontSize: '0.85rem' }}>
-                <p className="helper-text">
-                  {t('learning.planTotalTime', { time: studyPlan.totalTime, count: studyPlan.pomodoroCount })}
-                </p>
-                {Array.isArray(studyPlan.cycles) && (
-                  <ul style={{ paddingLeft: '1.2rem', marginTop: '0.5rem' }}>
-                    {studyPlan.cycles.slice(0, 3).map((cycle: any, idx: number) => (
-                      <li key={idx} style={{ marginBottom: '0.35rem' }}>
-                        <strong>{t('learning.planCycle', { number: cycle.cycleNumber })}</strong> : {cycle.focusTask}
-                      </li>
-                    ))}
-                    {studyPlan.cycles.length > 3 && (
-                      <li className="helper-text">{t('learning.planMoreCycles')}</li>
-                    )}
-                  </ul>
-                )}
-              </div>
-            )}
           </div>
         </section>
       </main>
 
+      {/* Study Plan Modal */}
+      {studyPlan && (
+        <Modal
+          isOpen={showPlanModal}
+          onClose={() => setShowPlanModal(false)}
+          title="📚 Your Personalized Study Plan"
+          message=""
+          icon="🎯"
+          buttonText="Start Study Plan"
+          buttonAction={() => {
+            setShowPlanModal(false);
+            // TODO: Implement starting the study plan with cycles
+            alert('Study plan accepted! (Implementation pending)');
+          }}
+        >
+          <div style={{ textAlign: 'left', maxHeight: '60vh', overflowY: 'auto' }}>
+            {/* Summary */}
+            <div style={{ 
+              padding: '1rem', 
+              background: 'rgba(139, 92, 246, 0.1)',
+              borderRadius: '0.75rem',
+              marginBottom: '1.5rem'
+            }}>
+              <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: 1.6 }}>
+                <strong>📊 Total Time:</strong> {studyPlan.totalTime} minutes<br/>
+                <strong>🔄 Pomodoro Cycles:</strong> {studyPlan.pomodoroCount}<br/>
+                <strong>⏱️ Per Cycle:</strong> 25 min focus + 5 min break
+              </p>
+              {studyPlan.summary && (
+                <p style={{ marginTop: '0.75rem', fontSize: '0.9rem', opacity: 0.9 }}>
+                  {studyPlan.summary}
+                </p>
+              )}
+            </div>
+
+            {/* Cycles */}
+            {Array.isArray(studyPlan.cycles) && studyPlan.cycles.map((cycle: any, idx: number) => (
+              <div key={idx} style={{
+                padding: '1rem',
+                background: 'rgba(56, 189, 248, 0.08)',
+                borderRadius: '0.75rem',
+                marginBottom: '1rem',
+                border: '1px solid rgba(56, 189, 248, 0.2)'
+              }}>
+                <h4 style={{ 
+                  margin: '0 0 0.75rem 0', 
+                  fontSize: '1rem',
+                  color: 'var(--accent-blue)'
+                }}>
+                  🔄 Cycle {cycle.cycleNumber} ({cycle.focusMinutes || 25} min focus + {cycle.breakMinutes || 5} min break)
+                </h4>
+                
+                <div style={{ marginBottom: '0.75rem' }}>
+                  <strong style={{ color: 'var(--text-main)' }}>📖 Focus Task:</strong>
+                  <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.9rem' }}>
+                    {cycle.focusTask}
+                  </p>
+                </div>
+
+                {cycle.detailedExplanation && (
+                  <div style={{ marginBottom: '0.75rem' }}>
+                    <strong style={{ color: 'var(--text-main)' }}>💡 What to do:</strong>
+                    <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.85rem', lineHeight: 1.5 }}>
+                      {cycle.detailedExplanation}
+                    </p>
+                  </div>
+                )}
+
+                {cycle.objectives && cycle.objectives.length > 0 && (
+                  <div style={{ marginBottom: '0.75rem' }}>
+                    <strong style={{ color: 'var(--text-main)' }}>🎯 Objectives:</strong>
+                    <ul style={{ margin: '0.25rem 0 0 0', paddingLeft: '1.5rem', fontSize: '0.85rem' }}>
+                      {cycle.objectives.map((obj: string, i: number) => (
+                        <li key={i} style={{ marginBottom: '0.25rem' }}>{obj}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {cycle.keyPoints && cycle.keyPoints.length > 0 && (
+                  <div>
+                    <strong style={{ color: 'var(--text-main)' }}>🔑 Key Points:</strong>
+                    <ul style={{ margin: '0.25rem 0 0 0', paddingLeft: '1.5rem', fontSize: '0.85rem' }}>
+                      {cycle.keyPoints.map((point: string, i: number) => (
+                        <li key={i} style={{ marginBottom: '0.25rem' }}>{point}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            ))}
+
+            {/* Tips */}
+            {studyPlan.tips && studyPlan.tips.length > 0 && (
+              <div style={{
+                padding: '1rem',
+                background: 'rgba(34, 197, 94, 0.1)',
+                borderRadius: '0.75rem',
+                border: '1px solid rgba(34, 197, 94, 0.2)'
+              }}>
+                <strong style={{ color: 'var(--text-main)' }}>💪 Study Tips:</strong>
+                <ul style={{ margin: '0.5rem 0 0 0', paddingLeft: '1.5rem', fontSize: '0.85rem' }}>
+                  {studyPlan.tips.map((tip: string, i: number) => (
+                    <li key={i} style={{ marginBottom: '0.25rem' }}>{tip}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        </Modal>
+      )}
+
+      {/* Completion Modal */}
       <Modal
         isOpen={showCompletionModal}
         onClose={() => {

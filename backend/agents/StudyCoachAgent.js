@@ -97,46 +97,49 @@ export class StudyCoachAgent {
     const context = chunks.slice(0, 15).join("\n").substring(0, 5000);
     const materialSummary = `Study material from ${fileNames.join(", ")} (${chunks.length} sections)`;
 
-    const prompt = `You are a study coach AI. A student has ${availableTime} minutes TOTAL available to study. This must include ALL time: focus sessions, breaks between sessions, and quiz completion time. The uploaded study material contains the following topics.
+    const prompt = `You are a study coach AI. A student has ${availableTime} minutes TOTAL available to study.
+
+IMPORTANT: Each Pomodoro cycle = 30 minutes EXACTLY (25 min focus + 5 min break)
+- 60 minutes = 2 cycles (25+5, 25+5)
+- 90 minutes = 3 cycles (25+5, 25+5, 25+5)
+- 120 minutes = 4 cycles (25+5, 25+5, 25+5, 25+5)
+- 150 minutes = 5 cycles
+Do the math: cycles = floor(availableTime / 30)
 
 Material: ${materialSummary}
 
 Content preview:
 ${context}
 
-Create a comprehensive study plan using the Pomodoro Technique. Structure your response as VALID JSON only. Begin your response immediately with { and end with }. Do NOT include any explanations, markdown, or text outside the JSON. Use this EXACT format:
+Create a comprehensive study plan using the Pomodoro Technique with 30-minute cycles. Structure your response as VALID JSON only. Begin your response immediately with { and end with }. Do NOT include any explanations, markdown, or text outside the JSON. Use this EXACT format:
 
 {
   "totalTime": ${availableTime},
-  "pomodoroCount": <number of pomodoro cycles>,
+  "pomodoroCount": <CALCULATE: floor(${availableTime} / 30)>,
   "cycles": [
     {
       "cycleNumber": 1,
-      "studyMinutes": <minutes for this cycle's focused study>,
-      "quizMinutes": <minutes allocated for answering this cycle's quiz questions>,
-      "focusTask": "Study topic X - Focus on understanding...",
-      "objectives": ["Objective 1", "Objective 2"],
-      "quiz": [
-        {
-          "question": "Question related to this cycle's content?",
-          "options": ["A) Option 1", "B) Option 2", "C) Option 3", "D) Option 4"],
-          "answer": "A"
-        }
-      ]
+      "duration": 30,
+      "focusMinutes": 25,
+      "breakMinutes": 5,
+      "focusTask": "Study topic X - Focus on understanding core concepts",
+      "detailedExplanation": "In this cycle, you will learn about... Start by reading pages X-Y, then practice 2-3 exercises to reinforce understanding.",
+      "objectives": ["Understand concept A", "Practice skill B", "Review example C"],
+      "keyPoints": ["Important point 1", "Important point 2", "Important point 3"]
     }
   ],
-  "breakMinutes": <minutes for short breaks between cycles>,
-  "longBreakMinutes": <minutes for long break after 4 cycles>,
-  "tips": ["Study tip 1", "Study tip 2"],
-  "summary": "Brief summary of the study plan"
+  "tips": ["Study tip 1", "Study tip 2", "Study tip 3"],
+  "summary": "Brief summary: You will complete X cycles covering topics A, B, C over ${availableTime} minutes"
 }
 
-CRITICAL MATHEMATICAL CONSTRAINTS:
-- COUNT ALL TIME: Sum(studyMinutes + quizMinutes for ALL cycles) + (short breaks × number of cycles-1) + longBreak must EQUAL ${availableTime}
-- For each cycle: studyMinutes + quizMinutes + breakMinutes (except last cycle) + long break allocation must fit within total
-- Standard timing: ~20-25 min study + ~3-5 min quiz per cycle, 5 min break between cycles, 15 min long break
-- For limited time (<60 min): ~10-15 min study + ~2-3 min quiz per cycle, shorter breaks (3-5 min)
-- NUMBER OF CYCLES: Choose count that makes mathematical sense for the total time
+CRITICAL RULES:
+- pomodoroCount = floor(${availableTime} / 30) - ALWAYS use this formula
+- Each cycle is EXACTLY 30 minutes (25 focus + 5 break)
+- Total time = pomodoroCount × 30 minutes
+- focusTask: Brief title of what to study in this cycle
+- detailedExplanation: 2-3 sentences explaining WHAT to do, HOW to approach it, and WHY it's important
+- objectives: 3-4 specific, measurable learning goals for this cycle
+- keyPoints: 3-4 most important concepts/facts to remember from this cycle
 
 RULES:
 - Base the focus tasks on the actual study material content
