@@ -103,6 +103,14 @@
     "planGenerating": "Generating...",
     "planMinTime": "Give at least 10 minutes to create a real plan.",
     "planFailed": "Unable to generate a plan right now.",
+    "uploadChooseFile": "Choose a file to send.",
+    "focusEndTitle": "📚 Study Plan",
+    "focusEndTask1": "Review course material calmly",
+    "focusEndTask2": "Do 2-3 exercises",
+    "focusEndTask3": "Note what you need to review in the next cycle",
+    "focusEndCompletionTitle": "🎉 Congratulations!",
+    "focusEndCompletionMessage": "You completed a 25-minute session! Earned {{xp}} XP for {{name}}. Time to test your knowledge!",
+    "focusEndCompletionButton": "Start Quiz",
     "planTotalTime": "Total time: {{time}} min • Cycles: {{count}}",
     "planCycle": "Cycle {{number}}",
     "planMoreCycles": "(... more cycles are available in the raw response)"
@@ -135,7 +143,27 @@
     "quizCompletionMessage": "Quiz completed! You earned {{score}} XP for your companion. Keep it up! 🎉",
     "quizCompletionButton": "Back to Dashboard"
   },
-  "animal": {
+    "analytics": {
+      "loading": "Loading your learning insights...",
+      "title": "📈 Learning Analytics",
+      "totalQuizzes": "Total Quizzes",
+      "averageScore": "Average Score",
+      "studyTime": "Study Time",
+      "weeklyProgress": "Weekly Progress",
+      "personalizedRecommendations": "Personalized Recommendations",
+      "excellent": "Excellent!",
+      "good": "Good",
+      "keepPracticing": "Keep practicing",
+      "needsImprovement": "Needs improvement",
+      "excellentMessage": "You're doing great! Keep up the excellent work! 🌟",
+      "goodMessage": "Making good progress! A bit more practice will get you to the next level.",
+      "improvementMessage": "Every expert was once a beginner! Keep practicing and you'll see improvement soon! 💪",
+      "recommendation1": "Try a Mathematics quiz to strengthen your geometry skills",
+      "recommendation2": "Review Science topics - your performance could improve",
+      "recommendation3": "Consider increasing your daily study goal to 35 minutes",
+      "recommendation4": "Complete your learning streak - one more day to go!"
+    },
+    "animal": {
     "contextDashboard": [
       "Ready to learn something new today?",
       "I believe in you! Let's study together! ✨",

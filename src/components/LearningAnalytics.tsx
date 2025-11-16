@@ -51,10 +51,10 @@ const LearningAnalytics: React.FC<LearningAnalyticsProps> = ({ style }) => {
           { day: 'Sun', quizzes: Math.floor(Math.random() * 3), studyTime: Math.floor(Math.random() * 60) }
         ],
         recommendations: [
-          'Try a Mathematics quiz to strengthen your geometry skills',
-          'Review Science topics - your performance could improve',
-          'Consider increasing your daily study goal to 35 minutes',
-          'Complete your learning streak - one more day to go!'
+          t('analytics.recommendation1'),
+          t('analytics.recommendation2'),
+          t('analytics.recommendation3'),
+          t('analytics.recommendation4')
         ].slice(0, 3)
       };
 
@@ -87,7 +87,7 @@ const LearningAnalytics: React.FC<LearningAnalyticsProps> = ({ style }) => {
           }}>
             📊
           </div>
-          <p style={{ color: 'var(--text-muted)', margin: 0 }}>Loading your learning insights...</p>
+          <p style={{ color: 'var(--text-muted)', margin: 0 }}>{t('analytics.loading')}</p>
         </div>
       </div>
     );
@@ -103,10 +103,10 @@ const LearningAnalytics: React.FC<LearningAnalyticsProps> = ({ style }) => {
   };
 
   const getScoreLabel = (score: number) => {
-    if (score >= 85) return 'Excellent!';
-    if (score >= 70) return 'Good';
-    if (score >= 55) return 'Keep practicing';
-    return 'Needs improvement';
+    if (score >= 85) return t('analytics.excellent');
+    if (score >= 70) return t('analytics.good');
+    if (score >= 55) return t('analytics.keepPracticing');
+    return t('analytics.needsImprovement');
   };
 
   return (
@@ -129,7 +129,7 @@ const LearningAnalytics: React.FC<LearningAnalyticsProps> = ({ style }) => {
           fontSize: '1.3rem',
           fontWeight: '600'
         }}>
-          📈 Learning Analytics
+          {t('analytics.title')}
         </h3>
       </div>
 
@@ -158,7 +158,7 @@ const LearningAnalytics: React.FC<LearningAnalyticsProps> = ({ style }) => {
             {analytics.totalQuizzes}
           </div>
           <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-            Total Quizzes
+            {t('analytics.totalQuizzes')}
           </div>
         </div>
 
@@ -183,7 +183,7 @@ const LearningAnalytics: React.FC<LearningAnalyticsProps> = ({ style }) => {
             {analytics.averageScore}%
           </div>
           <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-            Average Score
+            {t('analytics.averageScore')}
           </div>
         </div>
 
@@ -205,7 +205,7 @@ const LearningAnalytics: React.FC<LearningAnalyticsProps> = ({ style }) => {
             {analytics.totalStudyTime}m
           </div>
           <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-            Study Time
+            {t('analytics.studyTime')}
           </div>
         </div>
       </div>
@@ -218,7 +218,7 @@ const LearningAnalytics: React.FC<LearningAnalyticsProps> = ({ style }) => {
           fontSize: '1.1rem',
           fontWeight: '600'
         }}>
-          Weekly Progress
+          {t('analytics.weeklyProgress')}
         </h4>
         <div style={{
           display: 'flex',
@@ -260,7 +260,7 @@ const LearningAnalytics: React.FC<LearningAnalyticsProps> = ({ style }) => {
           fontSize: '1.1rem',
           fontWeight: '600'
         }}>
-          💡 Personalized Recommendations
+          💡 {t('analytics.personalizedRecommendations')}
         </h4>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
           {analytics.recommendations.map((rec, index) => (
@@ -313,10 +313,10 @@ const LearningAnalytics: React.FC<LearningAnalyticsProps> = ({ style }) => {
           color: 'var(--text-muted)'
         }}>
           {analytics.averageScore >= 80
-            ? 'You\'re doing great! Keep up the excellent work! 🌟'
+            ? t('analytics.excellentMessage')
             : analytics.averageScore >= 60
-            ? 'Making good progress! A bit more practice will get you to the next level.'
-            : 'Every expert was once a beginner! Keep practicing and you\'ll see improvement soon! 💪'
+            ? t('analytics.goodMessage')
+            : t('analytics.improvementMessage')
           }
         </div>
       </div>

@@ -70,7 +70,7 @@ const LearningPage: React.FC = () => {
   const handleUpload = async () => {
     if (!user) return;
     if (!uploadFile) {
-      setUploadError('Choisis un fichier à envoyer.');
+      setUploadError(t('learning.uploadChooseFile'));
       return;
     }
 
@@ -103,7 +103,7 @@ const LearningPage: React.FC = () => {
   const handleGeneratePlan = async () => {
     if (!user) return;
     if (!availableTime || availableTime < 10) {
-      setPlanError('Donne au moins 10 minutes pour créer un vrai plan.');
+      setPlanError(t('learning.planMinTime'));
       return;
     }
 
@@ -239,13 +239,13 @@ const LearningPage: React.FC = () => {
                   marginBottom: '0.75rem',
                   fontWeight: 600
                 }}>
-                  📚 Plan d'apprentissage
+                  {t('learning.focusEndTitle')}
                 </h3>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                   {[
-                    'Relire le cours calmement',
-                    'Faire 2-3 exercices',
-                    'Noter ce que tu dois revoir au prochain cycle'
+                    t('learning.focusEndTask1'),
+                    t('learning.focusEndTask2'),
+                    t('learning.focusEndTask3')
                   ].map((task, index) => (
                     <label 
                       key={index}
@@ -416,10 +416,10 @@ const LearningPage: React.FC = () => {
           setIsWorking(false);
           setCheckedTasks([false, false, false]);
         }}
-        title="🎉 Bravo !"
-        message={`Tu as terminé une session de 25 minutes ! ${sessionXP} XP gagnés pour ${user.animalName}. C'est l'heure de tester tes connaissances !`}
+        title={t('learning.focusEndCompletionTitle')}
+        message={t('learning.focusEndCompletionMessage', { xp: sessionXP, name: user.animalName })}
         icon="🎉"
-        buttonText="Commencer le quiz"
+        buttonText={t('learning.focusEndCompletionButton')}
         buttonAction={() => {
           setShowCompletionModal(false);
           setIsWorking(false);

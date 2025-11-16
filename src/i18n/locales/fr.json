@@ -103,6 +103,14 @@
     "planGenerating": "Génération en cours...",
     "planMinTime": "Donne au moins 10 minutes pour créer un vrai plan.",
     "planFailed": "Impossible de générer un plan pour le moment.",
+    "uploadChooseFile": "Choisis un fichier à envoyer.",
+    "focusEndTitle": "📚 Plan d'apprentissage",
+    "focusEndTask1": "Relire le cours calmement",
+    "focusEndTask2": "Faire 2-3 exercices",
+    "focusEndTask3": "Noter ce que tu dois revoir au prochain cycle",
+    "focusEndCompletionTitle": "🎉 Bravo !",
+    "focusEndCompletionMessage": "Tu as terminé une session de 25 minutes ! {{xp}} XP gagnés pour {{name}}. C'est l'heure de tester tes connaissances !",
+    "focusEndCompletionButton": "Commencer le quiz",
     "planTotalTime": "Temps total : {{time}} min • Cycles : {{count}}",
     "planCycle": "Cycle {{number}}",
     "planMoreCycles": "(... d'autres cycles sont disponibles dans la réponse brute)"
@@ -135,7 +143,27 @@
     "quizCompletionMessage": "Quiz terminé ! Tu as gagné {{score}} XP pour ton compagnon. Continue comme ça ! 🎉",
     "quizCompletionButton": "Retour au tableau de bord"
   },
-  "animal": {
+    "analytics": {
+      "loading": "Chargement de vos statistiques d'apprentissage...",
+      "title": "📈 Analyses d'Apprentissage",
+      "totalQuizzes": "Total des Quiz",
+      "averageScore": "Score Moyen",
+      "studyTime": "Temps d'Étude",
+      "weeklyProgress": "Progression Hebdomadaire",
+      "personalizedRecommendations": "Recommandations Personnalisées",
+      "excellent": "Excellent !",
+      "good": "Bien",
+      "keepPracticing": "Continuer à pratiquer",
+      "needsImprovement": "À améliorer",
+      "excellentMessage": "Vous vous débrouillez très bien ! Continuez ce travail excellent ! 🌟",
+      "goodMessage": "De bons progrès ! Un peu plus de pratique vous mènera au prochain niveau.",
+      "improvementMessage": "Chaque expert a été un jour débutant ! Continuez à pratiquer et vous verrez bientôt des améliorations ! 💪",
+      "recommendation1": "Essayez un quiz de Mathématiques pour renforcer vos compétences en géométrie",
+      "recommendation2": "Réviser les sujets de Sciences - vos performances pourraient s'améliorer",
+      "recommendation3": "Envisagez d'augmenter votre objectif d'étude quotidien à 35 minutes",
+      "recommendation4": "Complétez votre série d'apprentissage - plus qu'un jour à tenir !"
+    },
+    "animal": {
     "contextDashboard": [
       "Prêt à apprendre quelque chose de nouveau aujourd'hui ?",
       "Je crois en toi ! Étudions ensemble ! ✨",
@@ -159,27 +187,21 @@
       "Tu le sais, crois en toi !",
       "Prends ton temps, pas de rush !",
       "Chaque réponse t'apprend quelque chose !"
-    ],
-    "contextOnboarding": [
-      "Je suis si excited de te rencontrer ! ✨",
-      "Cette couleur te va parfaitement ! 🌈",
-      "Quel beau choix de nom ! 🎉",
-      "Presque prêts ! Devenons compagnons ! 💜"
     ]
   },
-  "streaks": {
-    "title": "Séries d'Hydratation",
-    "subtitle": "Garde ton compagnon hydraté en apprenant chaque jour !",
-    "days": "jours",
-    "restart": "Ton compagnon a besoin d'eau aujourd'hui !",
-    "oneDay": "1 jour ! Ton compagnon est rafraîchi !",
-    "keepGoing": "Garde ton compagnon hydraté !",
-    "onFire": "Ton compagnon reste hydraté ! 💧",
-    "epic": "Hydratation épique ! Ton compagnon prospère ! 🌟",
-    "legendary": "Soigneur légendaire ! Ton compagnon te sera éternellement reconnaissant ! 👑",
-    "personalBest": "Record personnel",
-    "getStarted": "Commence à apprendre pour hydrater ton compagnon aujourd'hui !"
-  },
+    "streaks": {
+      "title": "Séries d'Hydratation",
+      "subtitle": "Garde ton compagnon hydraté en apprenant chaque jour !",
+      "days": "jours",
+      "restart": "Ton compagnon a besoin d'eau aujourd'hui !",
+      "oneDay": "1 jour ! Ton compagnon est rafraîchi !",
+      "keepGoing": "Garde ton compagnon hydraté !",
+      "onFire": "Ton compagnon reste hydraté ! 💧",
+      "epic": "Hydratation épique ! Ton compagnon prospère ! 🌟",
+      "legendary": "Soigneur légendaire ! Ton compagnon te sera éternellement reconnaissant ! 👑",
+      "personalBest": "Record personnel",
+      "getStarted": "Commence à apprendre pour hydrater ton compagnon aujourd'hui !"
+    },
   "errors": {
     "generic": "Une erreur s'est produite. Veuillez réessayer.",
     "network": "Erreur réseau. Veuillez vérifier votre connexion.",
