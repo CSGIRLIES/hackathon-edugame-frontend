@@ -15,6 +15,7 @@ export interface User {
   parentEmail?: string;
   studyGoalMinutes: number;
   totalStudyTime: number;
+  completedLearningCycles: number;
 }
 
 export interface LearningSession {
@@ -32,6 +33,7 @@ interface UserContextType {
   updateStreak: () => Promise<void>;
   checkStreakExpiry: () => Promise<void>;
   startLearningSession: (topic: string, duration: number) => void;
+  incrementLearningCycle: () => Promise<void>;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -219,6 +221,23 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
+  const incrementLearningCycle = async () => {
+    if (!user) return;
+
+    const newCycleCount = user.completedLearningCycles + 1;
+    const updatedUser = {
+      ...user,
+      completedLearningCycles: newCycleCount,
+    };
+
+    setUser(updatedUser);
+
+    // Persist to Supabase
+    await updateProfile(user.id, {
+      completed_learning_cycles: newCycleCount,
+    });
+  };
+
   return (
     <UserContext.Provider
       value={{
@@ -230,6 +249,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         updateStreak,
         checkStreakExpiry,
         startLearningSession,
+        incrementLearningCycle,
       }}
     >
       {children}

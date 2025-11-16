@@ -149,6 +149,7 @@
     "analytics": {
       "loading": "Chargement de vos statistiques d'apprentissage...",
       "title": "📈 Analyses d'Apprentissage",
+      "studySessions": "Sessions d'étude",
       "totalQuizzes": "Total des Quiz",
       "averageScore": "Score Moyen",
       "studyTime": "Temps d'Étude",

@@ -78,6 +78,7 @@ const OnboardingPage: React.FC = () => {
         parentEmail: undefined,
         studyGoalMinutes: 0,
         totalStudyTime: 0,
+        completedLearningCycles: 0,
       };
 
       const success = await createProfile({
@@ -92,6 +93,7 @@ const OnboardingPage: React.FC = () => {
         max_streak: 0,
         study_goal_minutes: 0,
         total_study_time: 0,
+        completed_learning_cycles: 0,
       });
 
       setIsSaving(false);

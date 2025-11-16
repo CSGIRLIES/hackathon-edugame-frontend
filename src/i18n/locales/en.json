@@ -146,10 +146,11 @@
     "quizCompletionMessage": "Quiz completed! You earned {{score}} XP for your companion. Keep it up! 🎉",
     "quizCompletionButton": "Back to Dashboard"
   },
-    "analytics": {
-      "loading": "Loading your learning insights...",
-      "title": "📈 Learning Analytics",
-      "totalQuizzes": "Total Quizzes",
+  "analytics": {
+    "title": "Your Learning Analytics",
+    "loading": "Loading your analytics...",
+    "studySessions": "Study Sessions",
+    "totalQuizzes": "Total Quizzes",
       "averageScore": "Average Score",
       "studyTime": "Study Time",
       "weeklyProgress": "Weekly Progress",

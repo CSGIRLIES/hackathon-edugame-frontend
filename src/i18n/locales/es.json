@@ -193,6 +193,7 @@
   },
     "analytics": {
       "loading": "Cargando tus estadísticas de aprendizaje...",
+      "studySessions": "Sesiones de estudio",
       "title": "📈 Análisis de Aprendizaje",
       "totalQuizzes": "Total Quiz",
       "averageScore": "Puntuación Promedio",

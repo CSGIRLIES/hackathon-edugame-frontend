@@ -14,6 +14,7 @@ export interface CompanionProfile {
   parent_email?: string;
   study_goal_minutes: number;
   total_study_time: number;
+  completed_learning_cycles: number;
   created_at?: string;
   updated_at?: string;
 }
@@ -71,6 +72,7 @@ export async function createProfile(profile: CompanionProfile): Promise<boolean>
         parent_email: profile.parent_email || null,
         study_goal_minutes: profile.study_goal_minutes || 0,
         total_study_time: profile.total_study_time || 0,
+        completed_learning_cycles: profile.completed_learning_cycles || 0,
       },
     ]);
 

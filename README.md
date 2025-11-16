@@ -246,6 +246,42 @@ REACT_APP_SUPABASE_ANON_KEY=YOUR_SUPABASE_ANON_KEY_HERE
 
 > Tip: Never commit `.env` files. They're already in `.gitignore`.
 
+### 🧪 Test User for Demo/Development
+
+To quickly test the app with pre-populated data, you can create a demo user:
+
+**Test Credentials:**
+```
+Email: demo@csgirlies.com
+Password: DemoPass123!
+```
+
+**Setup Instructions:**
+
+1. **Create the test user in Supabase Auth:**
+   - Go to your Supabase dashboard → **Authentication** → **Users**
+   - Click "Add user" (or "Invite user")
+   - Enter email: `demo@csgirlies.com`
+   - Set password: `DemoPass123!`
+   - Confirm and note the generated `user_id` (UUID)
+
+2. **Add mock profile data:**
+   - Go to **SQL Editor** in Supabase
+   - Open `supabase_schema.sql` from your project
+   - Find the commented INSERT statement at the bottom
+   - Replace `'YOUR-USER-ID-HERE'` with the actual UUID from step 1
+   - Uncomment the INSERT statement and run it
+
+**What the demo user has:**
+- **Name**: Demo Student
+- **Companion**: Purple fox named "Nova" 🦊
+- **Level**: Adolescent (150 XP)
+- **Streaks**: 5-day current streak, 7-day max
+- **Study Data**: 125 minutes total, 12 completed Pomodoro cycles
+- **Perfect for testing**: Analytics, streaks, and all features!
+
+This allows you to immediately see a fully populated profile without going through onboarding.
+
 
 ---
 ## 6. How to run the app (step by step)

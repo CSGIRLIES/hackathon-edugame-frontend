@@ -26,7 +26,7 @@ const LearningPage: React.FC = () => {
 
   const [checkedTasks, setCheckedTasks] = useState<boolean[]>([false, false, false]);
 
-  const { user, updateXP, updateStreak } = useUser();
+  const { user, updateXP, updateStreak, incrementLearningCycle } = useUser();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,6 +39,7 @@ const LearningPage: React.FC = () => {
       const xpGained = 25; // 25 minutes = 25 XP
       updateXP(xpGained);
       updateStreak(); // Update streak when session completes
+      incrementLearningCycle(); // Track completed learning cycle
 
       // Play completion sound when a Pomodoro cycle finishes
       try {

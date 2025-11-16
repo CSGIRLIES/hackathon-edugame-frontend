@@ -193,6 +193,7 @@
   },
     "analytics": {
       "loading": "Lade deine Lernstatistiken...",
+      "studySessions": "Lernsessions",
       "title": "📈 Lernanalyse",
       "totalQuizzes": "Gesamt Quiz",
       "averageScore": "Durchschnittspunktzahl",

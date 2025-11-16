@@ -61,6 +61,7 @@ const AuthPage: React.FC = () => {
           parentEmail: profile.parent_email,
           studyGoalMinutes: profile.study_goal_minutes,
           totalStudyTime: profile.total_study_time,
+          completedLearningCycles: profile.completed_learning_cycles,
         };
 
         setUser(appUser);
